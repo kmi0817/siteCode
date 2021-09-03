@@ -1,0 +1,29 @@
+* {
+  margin: 0px;
+}
+body {
+  background-color: #e9f1f8;
+}
+article {
+  text-align: center;
+}
+
+/* Researcher Login */
+.div {
+  margin: 10px;
+}
+.label {
+  width: 70px;
+  display: inline-block;
+}
+.loginInput {
+  width: 170px;
+  height: 25px;
+}
+.btns {
+  margin: 10px;
+  width: 250px;
+  height: 30px;
+  border: 1px solid black;
+  background-color: white;
+}

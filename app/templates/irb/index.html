@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <title>IRB</title>
+
+        <link rel="stylesheet" href="../../static/irbStyle.css" type="text/css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        
+        {% if login %}
+        <!-- 로그인 시에만 ajax 파일 사용 -->
+        <script src="../../static/irbAjax.js"></script>
+        {% endif %}
+    </head>
+    <body>
+        <header>
+            <h1>IRB</h1>
+            <p>menu</p>
+        </header>
+        <article>
+            {% if login %}
+            <a href="/irb/processLogout">logout</a><br>
+            <form action="/irb/copyInvitation" method="POST">
+                <input type="submit" id="invitationCopy" class="btns" value="초대장 복사">
+            </form>
+
+            {% else %}
+            <form id="loginForm" action="/irb/processLogin" method="POST">
+                <div class="div">
+                    <div class="label">아이디</div>
+                    <input type="text" class="loginInput" name="id" placeholder="아이디">
+                </div>
+                <div class="div">
+                    <div class="label">비밀번호</div>
+                    <input type="password" class="loginInput" name="password" placeholder="비밀번호">
+                </div>
+                <input type="submit" class="btns" value="확인">
+            </form>
+            {% endif %}
+        </article>
+    </body>
+</html>
