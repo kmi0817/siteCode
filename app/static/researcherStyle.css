@@ -9,13 +9,14 @@ article {
 }
 
 .showInfo {
-  width: 550px;
-  min-height: 30px;
+  width: 880px;
+  height: 60px;
   border: 1px solid black;
   display: inline-block;
 }
 .div {
   margin: 10px;
+  height: auto;
 }
 .label {
   width: 70px;
