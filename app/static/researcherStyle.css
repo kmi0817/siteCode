@@ -11,10 +11,13 @@ a {
 a:hover {
   color: #494949e0;
 }
-article {
-  /* text-align: center; */
+.btns {
+  width: 150px;
+  height: 30px;
+  border: 1px solid black;
+  background-color: white;
 }
-
+/* irb 관련 */
 .showInfo {
   width: 880px;
   height: auto;
@@ -30,9 +33,8 @@ article {
   width: 100px;
   display: inline-block;
 }
-.btns {
-  width: 150px;
-  height: 30px;
-  border: 1px solid black;
-  background-color: white;
+
+/* provider 관련 */
+#container_provider {
+  text-align: center;
 }

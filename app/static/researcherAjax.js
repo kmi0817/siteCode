@@ -4,7 +4,7 @@ $(document).ready(() => {
     // var invitation = sessionStorage.getItem("temp");
     $(".showInfo").text(invitation);
 
-    $("#acceptInvitation").click(() => {
+    $("#acceptInvFromIrb").click(() => {
         $.ajax({
             type: "POST",
             url: "http://localhost:8031/connections/receive-invitation",
@@ -41,7 +41,7 @@ $(document).ready(() => {
                     <div id="displayCreddef" class="showInfo"></div>
                 </div>
                 `;
-                $("#container").append(appended);
+                $("#container_irb").append(appended);
             });
     });
 
@@ -49,7 +49,6 @@ $(document).ready(() => {
         var selectedId = $("input:radio[name=cred_def_ids]:checked").val();
         if (selectedId) {
             var creddef = sessionStorage.getItem(selectedId);
-            console.log(creddef);
             if (creddef) {
                 $("#displayCreddef").html(creddef);
             } else {
