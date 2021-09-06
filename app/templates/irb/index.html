@@ -21,7 +21,7 @@
         </header>
         <article>
             {% if login %}
-            <a href="/irb/processLogout" id="logout">logout</a><br>
+            <a href="/irb/processLogout" id="logout"><input type="button" class="btns" value="logout"></a><br>
             <form action="/irb/copyInvitation" method="POST">
                 <input type="submit" id="invitationCopy" class="btns" value="초대장 복사">
             </form>
