@@ -4,13 +4,21 @@
 body {
   background-color: #f6f6f6;
 }
+a {
+  text-decoration: none;
+  color: black;
+}
+a:hover {
+  color: #494949e0;
+}
 article {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .showInfo {
   width: 880px;
-  height: 60px;
+  height: auto;
+  min-height: 60px;
   border: 1px solid black;
   display: inline-block;
 }
@@ -19,7 +27,7 @@ article {
   height: auto;
 }
 .label {
-  width: 70px;
+  width: 100px;
   display: inline-block;
 }
 .btns {

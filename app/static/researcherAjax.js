@@ -12,14 +12,14 @@ $(document).ready(() => {
             datatype: "json"
         })
             .done((res) => {
-                var schema_ids = sessionStorage.getItem("schema_ids"); // 세션에서 스키마ID 가져오기
-                schema_ids = schema_ids.split(","); // 스키마ID 배열로 만들기 (string -> array)
-                var schema_ids_tag = ""; // 스키마ID 라디오 버튼 담을 태그
+                var cred_def_ids = sessionStorage.getItem("credential_definition_ids"); // 세션에서 스키마ID 가져오기
+                cred_def_ids = cred_def_ids.split(","); // 스키마ID 배열로 만들기 (string -> array)
+                var cred_def_ids_tag = ""; // 스키마ID 라디오 버튼 담을 태그
                 // 스키마ID 라디오 버튼 생성하여 태그에 추가
-                schema_ids.forEach((id) => {
-                    schema_ids_tag += `
+                cred_def_ids.forEach((id) => {
+                    cred_def_ids_tag += `
                         <label>
-                            <input type="radio" name="schema_ids" value="${id}">${id}
+                            <input type="radio" name="cred_def_ids" value="${id}">${id}
                         </label>
                         <br>
                         `;
@@ -32,31 +32,31 @@ $(document).ready(() => {
                     <div class="showInfo">${res["my_did"]}</div>
                 </div>
                 <div class="div">
-                    <div class="label">schemaID</div>
-                    <div class="showInfo">${schema_ids_tag}</div>
-                    <input type="button" id="selectSchemaId" class="btns" value="credential 선택">
+                    <div class="label">cred def ID</div>
+                    <div class="showInfo">${cred_def_ids_tag}</div>
+                    <input type="button" id="selectCreddefId" class="btns" value="credential 선택">
                 </div>
                 <div class="div">
-                    <div class="label">스키마</div>
-                    <div id="displaySchema" class="showInfo"></div>
+                    <div class="label">Cred def</div>
+                    <div id="displayCreddef" class="showInfo"></div>
                 </div>
                 `;
                 $("#container").append(appended);
             });
     });
 
-    $(document).on("click", "#selectSchemaId", () => {
-        var selectedId = $("input:radio[name=schema_ids]:checked").val();
+    $(document).on("click", "#selectCreddefId", () => {
+        var selectedId = $("input:radio[name=cred_def_ids]:checked").val();
         if (selectedId) {
-            var schema = sessionStorage.getItem(selectedId);
-            console.log(schema);
-            if (schema) {
-                $("#displaySchema").html(schema);
+            var creddef = sessionStorage.getItem(selectedId);
+            console.log(creddef);
+            if (creddef) {
+                $("#displayCreddef").html(creddef);
             } else {
-                alert("해당 스키마ID에 속하는 스키마가 없습니다.");
+                alert("해당 ID에 속하는 credential definition이 없습니다.");
             }
         } else {
-            alert("스미카ID를 선택하세요.");
+            alert("credential definition ID를 선택하세요.");
         }
     });
 })

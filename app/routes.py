@@ -37,7 +37,7 @@ def irb_processLogout() :
 
 @app.route('/irb/copyInvitation', methods=['POST'])
 def irb_copyInvitation() :
-    return redirect(url_for('researcher_index'))
+    return redirect(url_for('researcher_irb'))
     
 # provider
 @app.route('/provider')
@@ -48,6 +48,18 @@ def provider_index() :
 @app.route('/researcher')
 def researcher_index() :
     return render_template('researcher/index.html')
+
+@app.route('/researcher/irb')
+def researcher_irb() :
+    return render_template('researcher/irb.html')
+
+@app.route('/researcher/provider')
+def researcher_provider() :
+    return render_template('researcher/provider.html')
+
+@app.route('/researcher/consumer')
+def researcher_consumer() :
+    return render_template('researcher/consumer.html')
 
 # consumer
 @app.route('/consumer')

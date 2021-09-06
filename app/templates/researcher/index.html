@@ -10,14 +10,21 @@
     </head>
     <body>
         <a href="/">main</a>
-        <h1>Researcher</h1>
+        <header>
+            <h1><a href="/researcher">Researcher</a></h1>
 
-        <div id="container">
-            <div class="div">
-                <div class="label">초대장</div>
-                <div class="showInfo"></div>
-                <input type="button" id="acceptInvitation" class="btns" value="초대장 수락">
-            </div>
-        </div>
+            <nav>
+                <ol>
+                    <li><a href="/researcher/irb">IRB 관련</a></li>
+                    <li><a href="/researcher/provider">Provider 관련</a></li>
+                    <li><a href="/researcher/consumer">Consumer 관련</a></li>
+                </ol>
+            </nav>
+        </header>
+
+        <article>
+            {% block content %}
+            {% endblock %}
+        </article>
     </body>
 </html>

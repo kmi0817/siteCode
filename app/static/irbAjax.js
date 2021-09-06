@@ -10,20 +10,20 @@ $(document).ready(() => {
 
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8021/schemas/created",
+                url: "http://localhost:8021/credential-definitions/created",
             })
                 .done((res) => {
-                    var schema_ids = res["schema_ids"]; // 스키마ID 배열로 반환
-                    sessionStorage.setItem("schema_ids", schema_ids); // 스키마ID 세션 등록
+                    var creddef_ids = res["credential_definition_ids"]; // cred def ID 배열로 반환
+                    sessionStorage.setItem("credential_definition_ids", creddef_ids); // cred def ID 세션 등록
 
-                    // 반환받은 모든 스키마ID의 스키마를 세선에 등록함
-                    schema_ids.forEach((id) => {
+                    // 반환받은 모든 cred def ID의 cred def를 세선에 등록함
+                    creddef_ids.forEach((id) => {
                         $.ajax({
                             type: "GET",
-                            url: `http://localhost:8021/schemas/${id}`
+                            url: `http://localhost:8021/credential-definitions/${id}`
                         })
                             .done((res) => {
-                                // 스키마ID에 해당하는 스키마 세션 등록
+                                // cred def ID에 해당하는 cred def 세션 등록
                                 sessionStorage.setItem(id, JSON.stringify(res));
                             })
                     });
