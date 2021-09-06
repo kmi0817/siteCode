@@ -1,11 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="utf-8">
-        <title>Consumer</title>
-    </head>
-    <body>
-        <a href="/">main</a>
-        irb
-    </body>
+
+<head>
+    <meta charset="utf-8">
+    <title>Consumer</title>
+
+    <link rel="stylesheet" href="../../static/consumerStyle.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../../static/consumerAjax.js"></script>
+</head>
+
+<body>
+    <a href="/">main</a><br>
+    <a href="/consumer"><img src="../../static/signature_01_13.png" height=50> 데이터 센터</a>
+
+    <article>
+        {% if login %}
+        <a href="/consumer/processLogout" id="logout"><input type="button" class="btns" value="logout"></a><br>
+        <div>credential 출력 부분</div>
+        <input type="button" id="pullData" value="pull data">
+
+        {% else %}
+        <form id="loginForm" action="/consumer/processLogin" method="POST">
+            <div class="div">
+                <div class="label">아이디</div>
+                <input type="text" class="loginInput" name="id" placeholder="아이디">
+            </div>
+            <div class="div">
+                <div class="label">비밀번호</div>
+                <input type="password" class="loginInput" name="password" placeholder="비밀번호">
+            </div>
+            <input type="submit" class="btns" value="확인">
+        </form>
+        {% endif %}
+    </article>
+</body>
+
 </html>

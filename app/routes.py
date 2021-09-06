@@ -76,5 +76,24 @@ def researcher_consumer() :
 
 # consumer
 @app.route('/consumer')
-def iconsumer_index() :
-    return render_template('consumerServer/index.html')
+def consumer_index() :
+    if 'consumerLogin' in session :
+        return render_template('consumerServer/index.html', login=True)
+    else :
+        return render_template('consumerServer/index.html', login=False)
+
+@app.route('/consumer/processLogin', methods=['POST'])
+def consumer_processLogin() :
+    id = request.form['id']
+    pwd = request.form['password']
+
+    if user_id == id and user_pwd == pwd :
+        session["consumerLogin"] = True
+        return redirect(url_for('researcher_consumer'))
+    else :
+        return '<script>alert("아이디나 비밀번호가 틀립니다.");history.go(-1);</script>'
+
+@app.route('/consumer/processLogout')
+def consumer_processLogout() :
+    session.pop('consumerLogin', None)
+    return redirect(url_for('consumer_index'))
