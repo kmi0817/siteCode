@@ -1,105 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'researcher.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <title>CDM</title>
+{% block researcher %}
+{ view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
+{
+{% if ConsumerSignin and PullData %}
+    template: "데이터 사용", width: 600, autoheight: true
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% elif ConsumerSignin %}
+    align: "center",
+    body: {
+        view: "button", value: "Present Credential", width: 200, css: "webix_primary webix_button",
+        click: () => {
+            var values = JSON.stringify({"credential" : "researchers_cred_to_consumer"});
 
-    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
-    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
-</head>
+            webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
+                .then((res) => { location.href="/consumer"; });
+        }
+    }
+{% else %}
+    align: "center",
+    body: {
+        view: "button", value: "Accept Invitation (Consumer)", width: 200,
+        click: () => {
+            {% if ConsumerSignin %} // consumer 로그인 돼 있다면, 초대장 수락
+            var values = JSON.stringify({"invitation" : "temp_consumer"}); // 이거 없으면 Request 오류 발생
 
-<body>
-    <script>
-        webix.ready(() => {
-            webix.ui({
-                rows: [
-                    {
-                        view: "toolbar",
-                        elements: [
-                            {
-                                view: "button", value: "IRB", width: 100,
-                                click: () => { location.href = "/irb" }
-                            },
-                            {
-                                view: "button", value: "Researcher", width: 100,
-                                click: () => { location.href = "/researcher" }
-                            },
-                            {
-                                view: "button", value: "Provider", width: 100,
-                                click: () => { location.href = "/provider" }
-                            },
-                            {
-                                view: "button", value: "Consumer", width: 100,
-                                click: () => { location.href = "/consumer" }
-                            }
-                        ]
-                    },
-                    {
-                        view: "toolbar",
-                        elements: [
-                            { template: "<h1>Researcher</h1>", autowidth: true, autoheight: true, borderless: true },
-                            {
-                                view: "button", value: "IRB 관련", width: 100,
-                                click: () => { location.href="/researcher/irb"}
-                            },
-                            {
-                                view: "button", value: "Provider 관련", width: 100,
-                                click: () => { location.href="/researcher/provider"}
-                            },
-                            {
-                                view: "button", value: "Consumer 관련", width: 100,
-                                click: () => { location.href="/researcher/consumer"}
-                            },
-                        ]
-                    },
-                    {
-                        align: "center",
-                        body: {
-                            rows: [
-                                { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
-                                {
-                                    {% if ConsumerSignin and PullData %}
-                                    template: "데이터 사용", width: 600, autoheight: true
+            webix.ajax().post("http://127.0.0.1:5000/researcher/accept-con-inv", values)
+                .then((res) => { location.reload(); });
 
-                                    {% elif ConsumerSignin %}
-                                    align: "center",
-                                    body: {
-                                        view: "button", value: "Present Credential (to Consumer)", width: 200,
-                                        click: () => {
-                                            var values = JSON.stringify({"credential" : "researchers_cred_to_consumer"});
-                                            
-                                            webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
-                                                .then((res) => { location.href="/consumer"; });
-                                        }
-                                    }
-                                    {% else %}
-                                    align: "center",
-                                    body: {
-                                        view: "button", value: "Accept Invitation (Consumer)", width: 200,
-                                        click: () => {
-                                            {% if ConsumerSignin %} // consumer 로그인 돼 있다면, 초대장 수락
-                                            var values = JSON.stringify({"invitation" : "temp_consumer"}); // 이거 없으면 Request 오류 발생
-
-                                            webix.ajax().post("http://127.0.0.1:5000/researcher/accept-con-inv", values)
-                                                .then((res) => { location.reload(); });
-
-                                            {% else %} // 만약 consumer 로그인 안 돼 있다면, 경고 메시지 출력
-                                            webix.message({type: "error", text: "Consumer Sign in First!"});
-                                            {% endif %}
-                                        }
-                                    }
-                                    {% endif %}
-                                }
-                            ]
-                        }
-                    }
-                ]
-            })
-        })
-    </script>
-</body>
-
-</html>
+            {% else %} // 만약 consumer 로그인 안 돼 있다면, 경고 메시지 출력
+            webix.message({type: "error", text: "Consumer Sign in First!"});
+            {% endif %}
+        }
+    }
+{% endif %}
+}
+{% endblock %}

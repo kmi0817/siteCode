@@ -1,117 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layout.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <title>CDM</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
-    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
-</head>
-
-<body>
-    <script>
-        webix.ready(() => {
-            webix.ui({
-                rows: [
+{% block content %}
+{
+    view: "toolbar",
+    css: {"background-color" : "#1CA1C1"},
+    elements: [
+        {
+            view: "button", value: "Provider", width: 100, css: "webix_primary webix_button",
+            click: () => {location.href="/provider";}
+        }
+    ]
+},
+{
+    align: "center",
+    body: {
+        rows: [
+            { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
+            {% if ProviderInv %}
+            {
+                view: "form", id: "dataSelect_form", width: 600, height: 600,
+                elements: [
                     {
-                        view: "toolbar",
-                        elements: [
+                        cols: [
+                            { view: "search", placeholder: "data name (기능구현X)", width: 420, },
                             {
-                                view: "button", value: "IRB", width: 100,
-                                click: () => { location.href = "/irb" }
+                                view: "button", value: "Select this data", autowidth: true, css: "webix_primary webix_button",
+                                click: () => {
+                                    var selectedId = $$("dataList").getSelectedId();
+                                    webix.message("Selected Data is " + selectedId);
+                                    webix.message("2 Files, 2 Keys are issued as a credential");
+                                    webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
+                                }
                             },
-                            {
-                                view: "button", value: "Researcher", width: 100,
-                                click: () => { location.href = "/researcher" }
-                            },
-                            {
-                                view: "button", value: "Provider", width: 100,
-                                click: () => { location.href = "/provider" }
-                            },
-                            {
-                                view: "button", value: "Consumer", width: 100,
-                                click: () => { location.href = "/consumer" }
-                            }
                         ]
                     },
                     {
-                        template: "<h1>Provider (충남대 본원)</h1>", autoheight: true,
-                    },
-                    {
-                        align: "center",
-                        body: {
-                            rows: [
-                                { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
-                                {% if ProviderInv %}
-                                {
-                                    view: "form", id: "dataSelect_form", width: 600, height: 600,
-                                    elements: [
-                                        {
-                                            view: "button", value: "Select this data", autowidth: true, click: () => {
-                                                var selectedId = $$("dataList").getSelectedId();
-                                                webix.message("Selected Data is " + selectedId);
-                                                webix.message("2 Files, 2 Keys are issued as a credential");
-                                                webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
-                                            }
-                                        },
-                                        {
-                                            view: "list", id: "dataList", select: true, scroll: "y",
-                                            template: "#id#. #title#(#year#)",
-                                            data: `[
-                                                {"id":1,"title":"The Shawshank Redemption","year":"1994","votes":"678,79","rating":"9,2","rank":"1"},
-                                                {"id":2,"title":"The Godfather","year":"1972","votes":"511,495","rating":"9,2","rank":"2"},
-                                                {"id":3,"title":"The Godfather: Part II","year":"1974","votes":"319,352","rating":"9","rank":"3"},
-                                                {"id":4,"title":"The Good, the Bad and the Ugly","year":"1966","votes":"213,03","rating":"8,9","rank":"4"},
-                                                {"id":5,"title":"My Fair Lady","year":"1964","votes":"533,848","rating":"8,9","rank":"5"},
-                                                {"id":6,"title":"12 Angry Men","year":"1957","votes":"164,558","rating":"8,9","rank":"6"},
-                                                {"id":7,"title":"Schindler's List","year":"1993","votes":"355,638","rating":"8,9","rank":"7"},
-                                                {"id":8,"title":"One Flew Over the Cuckoo's Nest","year":"1975","votes":"283,176","rating":"8,8","rank":"8"},
-                                                {"id":9,"title":"The Dark Knight","year":"2008","votes":"612,37","rating":"8,8","rank":"9"},
-                                                {"id":10,"title":"The Lord of the Rings: The Return of the King","year":"2003","votes":"472,843","rating":"8,8","rank":"10"},
-                                                {"id":11,"title":"Star Wars: Episode V - The Empire Strikes Back","year":"1980","votes":"348,012","rating":"8,8","rank":"11"},
-                                                {"id":12,"title":"Inception","year":"2010","votes":"458,693","rating":"8,8","rank":"12"},
-                                                {"id":13,"title":"Fight Club","year":"1999","votes":"507,723","rating":"8,8","rank":"13"},
-                                                {"id":14,"title":"Seven Samurai","year":"1954","votes":"118,925","rating":"8,8","rank":"14"},
-                                                {"id":15,"title":"The Dark Knight","year":"2008","votes":"612,37","rating":"8,8","rank":"9"},
-                                                {"id":16,"title":"The Lord of the Rings: The Return of the King","year":"2003","votes":"472,843","rating":"8,8","rank":"10"},
-                                                {"id":17,"title":"Star Wars: Episode V - The Empire Strikes Back","year":"1980","votes":"348,012","rating":"8,8","rank":"11"},
-                                                {"id":18,"title":"Inception","year":"2010","votes":"458,693","rating":"8,8","rank":"12"},
-                                                {"id":19,"title":"Fight Club","year":"1999","votes":"507,723","rating":"8,8","rank":"13"},
-                                                {"id":20,"title":"Seven Samurai","year":"1954","votes":"118,925","rating":"8,8","rank":"14"},
-                                                {"id":21,"title":"The Lord of the Rings: The Return of the King","year":"2003","votes":"472,843","rating":"8,8","rank":"10"},
-                                                {"id":22,"title":"Star Wars: Episode V - The Empire Strikes Back","year":"1980","votes":"348,012","rating":"8,8","rank":"11"},
-                                                {"id":23,"title":"Inception","year":"2010","votes":"458,693","rating":"8,8","rank":"12"},
-                                                {"id":24,"title":"Fight Club","year":"1999","votes":"507,723","rating":"8,8","rank":"13"},
-                                                {"id":25,"title":"Seven Samurai","year":"1954","votes":"118,925","rating":"8,8","rank":"14"}
-                                            ]`
-                                        }
-                                    ]
-                                },
-                                {% else %}
-                                {
-                                    align: "center",
-                                    body: {
-                                        view: "button", value: "Create Invitation", width: 200,
-                                        click: () => {
-                                            var values = JSON.stringify({"invitation" : "temp_from_provider"}); // 이거 없으면 Request 오류 발생
-                                            webix.ajax().post("http://127.0.0.1:5000/provider/create-inv", values)
-                                                .then((res) => {
-                                                    location.href="/researcher/provider";
-                                                });
-                                        }
-                                    }
-                                },
-                                {% endif %}
-                            ]
-                        }
+                        view: "list", id: "dataList", select: true, scroll: "y",
+                        template: "#id#. #title#(#year#)",
+                        data: `[
+                            {"id":1,"title":"The Shawshank Redemption","year":"1994","votes":"678,79","rating":"9,2","rank":"1"},
+                            {"id":2,"title":"The Godfather","year":"1972","votes":"511,495","rating":"9,2","rank":"2"},
+                            {"id":3,"title":"The Godfather: Part II","year":"1974","votes":"319,352","rating":"9","rank":"3"},
+                            {"id":4,"title":"The Good, the Bad and the Ugly","year":"1966","votes":"213,03","rating":"8,9","rank":"4"},
+                            {"id":5,"title":"My Fair Lady","year":"1964","votes":"533,848","rating":"8,9","rank":"5"},
+                            {"id":6,"title":"12 Angry Men","year":"1957","votes":"164,558","rating":"8,9","rank":"6"},
+                            {"id":7,"title":"Schindler's List","year":"1993","votes":"355,638","rating":"8,9","rank":"7"},
+                            {"id":8,"title":"One Flew Over the Cuckoo's Nest","year":"1975","votes":"283,176","rating":"8,8","rank":"8"},
+                            {"id":9,"title":"The Dark Knight","year":"2008","votes":"612,37","rating":"8,8","rank":"9"},
+                            {"id":10,"title":"The Lord of the Rings: The Return of the King","year":"2003","votes":"472,843","rating":"8,8","rank":"10"},
+                            {"id":11,"title":"Star Wars: Episode V - The Empire Strikes Back","year":"1980","votes":"348,012","rating":"8,8","rank":"11"},
+                            {"id":12,"title":"Inception","year":"2010","votes":"458,693","rating":"8,8","rank":"12"},
+                            {"id":13,"title":"Fight Club","year":"1999","votes":"507,723","rating":"8,8","rank":"13"},
+                            {"id":14,"title":"Seven Samurai","year":"1954","votes":"118,925","rating":"8,8","rank":"14"},
+                            {"id":15,"title":"The Dark Knight","year":"2008","votes":"612,37","rating":"8,8","rank":"9"},
+                            {"id":16,"title":"The Lord of the Rings: The Return of the King","year":"2003","votes":"472,843","rating":"8,8","rank":"10"},
+                            {"id":17,"title":"Star Wars: Episode V - The Empire Strikes Back","year":"1980","votes":"348,012","rating":"8,8","rank":"11"},
+                            {"id":18,"title":"Inception","year":"2010","votes":"458,693","rating":"8,8","rank":"12"},
+                            {"id":19,"title":"Fight Club","year":"1999","votes":"507,723","rating":"8,8","rank":"13"},
+                            {"id":20,"title":"Seven Samurai","year":"1954","votes":"118,925","rating":"8,8","rank":"14"},
+                            {"id":21,"title":"The Lord of the Rings: The Return of the King","year":"2003","votes":"472,843","rating":"8,8","rank":"10"},
+                            {"id":22,"title":"Star Wars: Episode V - The Empire Strikes Back","year":"1980","votes":"348,012","rating":"8,8","rank":"11"},
+                            {"id":23,"title":"Inception","year":"2010","votes":"458,693","rating":"8,8","rank":"12"},
+                            {"id":24,"title":"Fight Club","year":"1999","votes":"507,723","rating":"8,8","rank":"13"},
+                            {"id":25,"title":"Seven Samurai","year":"1954","votes":"118,925","rating":"8,8","rank":"14"}
+                        ]`
                     }
                 ]
-            })
-        })
-    </script>
-</body>
-
-</html>
+            },
+            {% else %}
+            {
+                align: "center",
+                body: {
+                    view: "button", value: "Create Invitation", width: 200, css: "webix_primary webix_button",
+                    click: () => {
+                        var values = JSON.stringify({"invitation" : "temp_from_provider"}); // 이거 없으면 Request 오류 발생
+                        webix.ajax().post("http://127.0.0.1:5000/provider/create-inv", values)
+                            .then((res) => {
+                                location.href="/researcher/provider";
+                            });
+                    }
+                }
+            },
+            {% endif %}
+        ]
+    }
+}
+{% endblock %}
