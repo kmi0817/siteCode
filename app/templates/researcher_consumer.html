@@ -7,7 +7,7 @@
     template: "데이터 사용", width: 600, autoheight: true
 
 {% elif ConsumerSignin %}
-    align: "center",
+    align: "center,middle",
     body: {
         view: "button", value: "Present Credential", width: 200, css: "webix_primary webix_button",
         click: () => {
@@ -18,7 +18,7 @@
         }
     }
 {% else %}
-    align: "center",
+    align: "center,middle",
     body: {
         view: "button", value: "Accept Invitation (Consumer)", width: 200,
         click: () => {
