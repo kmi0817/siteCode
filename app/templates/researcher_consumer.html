@@ -7,7 +7,7 @@
     template: "데이터 사용", width: 600, autoheight: true
 
 {% elif ConsumerSignin %}
-    align: "center,middle",
+    align: "center",
     body: {
         view: "button", value: "Present Credential", width: 200, css: "webix_primary webix_button",
         click: () => {
@@ -18,9 +18,9 @@
         }
     }
 {% else %}
-    align: "center,middle",
+    align: "center",
     body: {
-        view: "button", value: "Accept Invitation (Consumer)", width: 200,
+        view: "button", value: "Accept Invitation", width: 200, css: "webix_primary webix_button",
         click: () => {
             {% if ConsumerSignin %} // consumer 로그인 돼 있다면, 초대장 수락
             var values = JSON.stringify({"invitation" : "temp_consumer"}); // 이거 없으면 Request 오류 발생

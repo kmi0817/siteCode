@@ -4,7 +4,7 @@
 { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
 {% if ProviderInv %}
 {
-    align: "center,middle",
+    align: "center",
     body: {
         view: "button", value: "Present Credential", width: 200, css: "webix_primary webix_button",
         click: () => {location.href="/provider";}
@@ -12,7 +12,7 @@
 }
 {% else %}
 {
-    align: "center,middle",
+    align: "center",
     body: {
         view: "button", value: "Accept Invitation", width: 200, css: "webix_primary webix_button",
         click: () => {
