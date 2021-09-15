@@ -10,7 +10,24 @@
             view: "button", label: "<span style='font-size: 1.5em;'>Consumer</span>",
             type: "icon", icon: "wxi-folder-open", autowidth: true, css: "myButton_consumer webix_button",
             click: () => {location.href="/consumer";}
+        },
+        {% if ConsumerSignin %}
+        {
+            align: "right,middle",
+            body: {
+                view: "button", value: "Sign Out", width: 100, css: "myButton_consumer webix_button",
+                click: () => {
+                    webix.ajax().post("http://127.0.0.1:5000/consumer/process-signout")
+                        .then((res) => {
+                            location.reload();
+                        });
+                    }
+            }
+        },
+        {
+            view: "spacer", width: 50
         }
+        {% endif %}
     ]
 },
 {
@@ -41,6 +58,8 @@
                         }
                     }
                 ]
+                {% elif ConsumerSignin %}
+                template: "Waiting for the researcher's credential presentation...", width: 600, autoheight: true
                 {% elif ConsumerSignin == False %}
                 view: "form",
                 id: "signin_form",
@@ -65,7 +84,7 @@
                                 var values = signin_form.getValues();
                                 values = webix.ajax().stringify(values);
 
-                                webix.ajax().post("http://127.0.0.1:5000/consumer/processSignin", values)
+                                webix.ajax().post("http://127.0.0.1:5000/consumer/process-signin", values)
                                     .then((res) => { location.href="/researcher/consumer"; });
                             }
                         }

@@ -17,7 +17,7 @@
             body: {
                 view: "button", value: "Sign Out", width: 100, css: "webix_transparent webix_button",
                 click: () => {
-                    webix.ajax().post("http://127.0.0.1:5000/irb/processSignout")
+                    webix.ajax().post("http://127.0.0.1:5000/irb/process-signout")
                         .then((res) => {
                             location.reload();
                         });
@@ -70,7 +70,7 @@
                                 values = webix.ajax().stringify(values);
                                 console.log(values);
 
-                                webix.ajax().post("http://127.0.0.1:5000/irb/processSignin", values)
+                                webix.ajax().post("http://127.0.0.1:5000/irb/process-signin", values)
                                     .then((res) => {
                                         location.reload();
                                     });

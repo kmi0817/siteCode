@@ -18,7 +18,7 @@ def IRB() :
     
     return render_template("irb.html", IRBsignin=signin)
 
-@app.route('/irb/processSignin', methods=['POST'])
+@app.route('/irb/process-signin', methods=['POST'])
 def IRB_processSignin() :
     values = request.get_json(force=True)
     input_email = values['email']
@@ -30,7 +30,7 @@ def IRB_processSignin() :
     else :
         return '<script>alert("Check your inputs");history.go(-1);</script>'
 
-@app.route('/irb/processSignout', methods=['POST'])
+@app.route('/irb/process-signout', methods=['POST'])
 def IRB_processSignout() :
     session.pop('IRBsignin', None)
     session.pop('IRBinv', None)
@@ -122,7 +122,7 @@ def consumer() :
         cred = True
     return render_template('consumer.html', ConsumerSignin=signin, ResearcherCred=cred)
 
-@app.route('/consumer/processSignin', methods=['POST'])
+@app.route('/consumer/process-signin', methods=['POST'])
 def consumer_processSignin() :
     values = request.get_json(force=True)
     input_email = values['email']
@@ -133,7 +133,14 @@ def consumer_processSignin() :
         return 'Consumer Signin OK'
     else :
         return '<script>alert("Check your inputs");history.go(-1);</script>'
-        # 근데 되돌아가진 않음...
+
+@app.route('/consumer/process-signout', methods=['POST'])
+def consumer_processSignout() :
+    session.pop('ConsumerSignin', None)
+    session.pop('ConsumerInv', None)
+    session.pop('ConsumerInv', None)
+    session.pop('ResearcherCred', None)
+    return 'sign out OK'
 
 @app.route('/consumer/receive-cred', methods=['POST'])
 def consumer_receive_cred() :
