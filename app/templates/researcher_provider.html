@@ -6,7 +6,7 @@
 {
     align: "center",
     body: {
-        view: "button", value: "Present Credential", width: 200, css: "webix_primary webix_button",
+        view: "button", value: "Present Credential", width: 200, css: "myButton_research webix_button",
         click: () => {location.href="/provider";}
     }
 }
@@ -14,7 +14,7 @@
 {
     align: "center",
     body: {
-        view: "button", value: "Accept Invitation", width: 200, css: "webix_primary webix_button",
+        view: "button", value: "Accept Invitation", width: 200, css: "myButton_research webix_button",
         click: () => {
             var values = JSON.stringify({"invitation" : "temp_from_provider"});
             webix.ajax().post("http://127.0.0.1:5000/researcher/accept-provider-inv", values)

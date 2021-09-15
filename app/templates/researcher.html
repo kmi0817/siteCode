@@ -2,33 +2,37 @@
 
 {% block content %}
 {
-    view: "toolbar",
-    css: {"background-color" : "#1CA1C1"},
+    view: "toolbar", height: 50,
+    css: {"background-color" : "#78B395"}, // #78B395 #a3d8bd #98dbb8
     cols: [
+        {view: "spacer", width: 30},
         {
-            view: "button", value: "Researcher", width: 100, css: "webix_primary webix_button",
+            view: "button", label: "<span style='font-size: 1.5em'>Researcher</span>",
+            type: "icon", icon: "wxi-search", autowidth: true, css: "myButton_research webix_button",
             click: () => {location.href="/researcher";}
         },
         {
-            align: "right",
-            margin: 50,
+            align: "right,middle",
             body: {
                 cols: [
                     {
-                        view: "button", value: "IRB", width: 100, css: "webix_primary webix_button",
+                        view: "button", value: "IRB", width: 100,
+                        css: "myButton_research webix_button", borderless: false,
                         click: () => { location.href="/researcher/irb"}
                     },
+                    { view: "spacer", width: 20},
                     {
-                        view: "button", value: "Provider", width: 100, css: "webix_primary webix_button",
+                        view: "button", value: "Provider", width: 100,
+                        css: "myButton_research webix_button", borderless: false,
                         click: () => { location.href="/researcher/provider"}
                     },
+                    { view: "spacer", width: 20},
                     {
-                        view: "button", value: "Consumer", width: 100, css: "webix_primary webix_button",
+                        view: "button", value: "Consumer", width: 100,
+                        css: "myButton_research webix_button", borderless: false,
                         click: () => { location.href="/researcher/consumer"}
                     },
-                    {
-                        view: "spacer", width: 70
-                    }
+                    {view: "spacer", width: 70}
                 ]
             }
         }

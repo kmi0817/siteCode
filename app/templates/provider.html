@@ -2,11 +2,13 @@
 
 {% block content %}
 {
-    view: "toolbar",
+    view: "toolbar", height: 50,
     css: {"background-color" : "#1CA1C1"},
     elements: [
+        {view: "spacer", width: 30},
         {
-            view: "button", value: "Provider", width: 100, css: "webix_primary webix_button",
+            view: "button", label: "<span style='font-size: 1.5em;'>Provider</span>",
+            type: "icon", icon: "wxi-folder", autowidth: true, css: "webix_primary webix_button",
             click: () => {location.href="/provider";}
         }
     ]

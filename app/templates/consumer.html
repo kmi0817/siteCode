@@ -2,11 +2,13 @@
 
 {% block content %}
 {
-    view: "toolbar",
-    css: {"background-color" : "#1CA1C1"},
+    view: "toolbar", height: 50,
+    css: {"background-color" : "#DBB085"},
     elements: [
+        {view: "spacer", width: 30},
         {
-            view: "button", value: "Consumer", width: 100, css: "webix_primary webix_button",
+            view: "button", label: "<span style='font-size: 1.5em;'>Consumer</span>",
+            type: "icon", icon: "wxi-folder-open", autowidth: true, css: "myButton_consumer webix_button",
             click: () => {location.href="/consumer";}
         }
     ]
@@ -31,7 +33,7 @@
                     {
                         align: "center",
                         body: {
-                            view: "button", value: "Pull Data", width: 200, css: "webix_primary webix_button",
+                            view: "button", value: "Pull Data", width: 200, css: "myButton_consumer webix_button",
                             click: () => {
                                 webix.ajax().post("http://127.0.0.1:5000/consumer/pull-data")
                                     .then((res) => { location.href="/researcher/consumer"; });
@@ -56,7 +58,7 @@
                         invalidMessage: "Password can not be empty"
                     },
                     {
-                        view: "button", id: "btnSubmit", value: "Submit", hotkey: "enter", css: "webix_primary webix_button",
+                        view: "button", id: "btnSubmit", value: "Submit", hotkey: "enter", css: "myButton_consumer webix_button",
                         click: () => {
                             var signin_form = $$("btnSubmit").getParentView();
                             if (signin_form.validate()) {

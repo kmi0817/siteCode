@@ -33,7 +33,7 @@
     {% else %}
     align: "center",
     body: {
-        view: "button", value: "Accept Invitation", width: 200, css: "webix_primary webix_button",
+        view: "button", value: "Accept Invitation", width: 200, css: "myButton_research webix_button",
         click: () => {
             {% if IRBsignin %} // IRB 로그인 돼 있다면, 초대장 수락
             var values = JSON.stringify({"invitation" : "temp"}); // 이거 없으면 Request 오류 발생

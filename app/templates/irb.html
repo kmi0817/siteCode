@@ -2,18 +2,20 @@
 
 {% block content %}
 {
-    view: "toolbar",
-    css: {"background-color" : "#1CA1C1"},
+    view: "toolbar", height: 50,
+    css: {"background-color" : "#EBEBEB"},
     cols: [
+        {view: "spacer", width: 30},
         {
-            view: "button", value: "IRB", width: 100, css: "webix_primary webix_button",
+            view: "button", label: "<span style='font-size: 1.5em;'>IRB</span>",
+            type: "icon", icon: "wxi-filter", autowidth: true, css: "webix_transparent webix_button",
             click: () => {location.href="/irb";}
         },
         {% if IRBsignin %}
         {
-            align: "right",
+            align: "right,middle",
             body: {
-                view: "button", value: "Sign Out", width: 100, css: "webix_primary webix_button",
+                view: "button", value: "Sign Out", width: 100, css: "webix_transparent webix_button",
                 click: () => {
                     webix.ajax().post("http://127.0.0.1:5000/irb/processSignout")
                         .then((res) => {
@@ -35,8 +37,8 @@
             {% if IRBsignin %}
             { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
             {
-                align: "center", body: {
-                view: "button", value: "Copy Invitation", width: 200, css: "webix_primary webix_button",
+                align: "center", width: 600, body: {
+                view: "button", value: "Copy Invitation", width: 200, css: "webix_transparent webix_button", borderless: false,
                     click: () => { location.href = "/researcher/irb" }
                 }
             },
@@ -59,7 +61,8 @@
                         invalidMessage: "Password can not be empty"
                     },
                     {
-                        view: "button", id: "btnSubmit", value: "Submit", hotkey: "enter", css: "webix_primary webix_button",
+                        view: "button", id: "btnSubmit", hotkey: "enter", value: "Submit",
+                        css: "webix_transparent webix_button", borderless: false,
                         click: () => {
                             var signin_form = $$("btnSubmit").getParentView();
                             if (signin_form.validate()) {
