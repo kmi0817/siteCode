@@ -1,5 +1,11 @@
 {% extends 'layout.html' %}
 
+{% block style_JS %}
+{% if IRBsignin %}
+<script src="../static/irb.js" type="text/javascript"></script>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 {
     view: "toolbar", height: 50,
@@ -39,15 +45,22 @@
             {
                 align: "center", width: 600, body: {
                 view: "button", value: "Copy Invitation", width: 200, css: "webix_transparent webix_button", borderless: false,
-                    click: () => { location.href = "/researcher/irb" }
+                    click: () => {
+                        // 초대장 받기
+                        webix.ajax().post("http://0.0.0.0:8011/connections/create-invitation")
+                        .then((res) => {
+                            var invitation = res.json().invitation; // 초대장 받기
+                            invitation = JSON.stringify(invitation);
+                            sessionStorage.setItem("invitation", invitation); // 초대장 세션 등록
+                            // location.href = "/researcher/irb"
+                        });
+                    }
                 }
             },
             {% else %}
             { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
             {
-                view: "form",
-                id: "signin_form",
-                width: 600,
+                view: "form", id: "signin_form", width: 600,
                 elementsConfig: {
                     labelWidth: 80,
                 },

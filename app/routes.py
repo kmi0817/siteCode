@@ -80,7 +80,7 @@ def researcher_consumer() :
 @app.route('/researcher/accept-irb-inv', methods=['POST'])
 def researcher_accept_irb_inv() :
     values = request.get_json(force=True)
-    session['IRBinv'] = values['invitation']
+    session['IRBinv'] = values
     return values
 
 @app.route('/researcher/accept-provider-inv', methods=['POST'])
