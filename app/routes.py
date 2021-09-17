@@ -86,7 +86,7 @@ def researcher_accept_irb_inv() :
 @app.route('/researcher/accept-provider-inv', methods=['POST'])
 def researcher_accept_provider_inv() :
     values = request.get_json(force=True)
-    session['ProviderInv'] = values['invitation']
+    session['ProviderInv'] = values
     return values
 
 @app.route('/researcher/accept-con-inv', methods=['POST'])

@@ -49,32 +49,32 @@
                     click: () => {
                         // 초대장 받기
                         webix.ajax().post("http://0.0.0.0:8011/connections/create-invitation")
-                        .then((res) => {
-                            var invitation = res.json().invitation; // 초대장 받기
-                            invitation = JSON.stringify(invitation);
-                            sessionStorage.setItem("irb_invitation", invitation); // 초대장 세션 등록
-
-                            var connection_id = res.json().connection_id; // connection id 받기
-                            sessionStorage.setItem("irb_connection_id", connection_id); // connection id 세션 등록
-
-                            // credential definition id 받기
-                            webix.ajax().get("http://0.0.0.0:8011/credential-definitions/created")
                             .then((res) => {
-                                var ids = res.json().credential_definition_ids;
-                                sessionStorage.setItem("irb_creddef_id", ids);
-                                
-                                //sessionStorage.setItem("irb_creddef_id", `["id1", "id2", "id3"]`);
-                                
-                                // id에 해당하는 credential-definition을 세션에 등록함
-                                ids.forEach((id) => {
-                                    webix.ajax().get(`http://0.0.0.0:8011/credential-definitions/${id}`)
-                                    .then((res) => {
-                                        sessionStorage.setItem(id, JSON.stringify(res));
+                                var invitation = res.json().invitation; // 초대장 받기
+                                invitation = JSON.stringify(invitation);
+                                sessionStorage.setItem("irb_invitation", invitation); // 초대장 세션 등록
+
+                                var connection_id = res.json().connection_id; // connection id 받기
+                                sessionStorage.setItem("irb_connection_id", connection_id); // connection id 세션 등록
+
+                                // credential definition id 받기
+                                webix.ajax().get("http://0.0.0.0:8011/credential-definitions/created")
+                                .then((res) => {
+                                    var ids = res.json().credential_definition_ids;
+                                    sessionStorage.setItem("irb_creddef_id", ids);
+                                    
+                                    //sessionStorage.setItem("irb_creddef_id", `["id1", "id2", "id3"]`);
+                                    
+                                    // id에 해당하는 credential-definition을 세션에 등록함
+                                    ids.forEach((id) => {
+                                        webix.ajax().get(`http://0.0.0.0:8011/credential-definitions/${id}`)
+                                        .then((res) => {
+                                            sessionStorage.setItem(id, JSON.stringify(res));
+                                            location.href = "/researcher/irb";
+                                        })
                                     })
-                                })
+                                });
                             });
-                            // location.href = "/researcher/irb"
-                        });
                     }
                 }
             },

@@ -12,17 +12,45 @@
 }
 {% else %}
 {
-    align: "center",
-    body: {
-        view: "button", value: "Accept Invitation", width: 200, css: "myButton_research webix_button",
-        click: () => {
-            var values = JSON.stringify({"invitation" : "temp_from_provider"});
-            webix.ajax().post("http://127.0.0.1:5000/researcher/accept-provider-inv", values)
-                .then((res) => {
-                    location.reload();
-                });
+    view: "form", id: "invitation_form", width: 600,
+    elements: [
+        {
+            view: "textarea", id: "invitation", minHeight: 250, placeholder: "invitation here..."
+        },
+        {
+            view: "button", value: "Accept Invitation", css: "myButton_research webix_button",
+            click: () => {
+                var invitation = JSON.stringify(webix.storage.session.get("provider_invitation"));
+                webix.ajax().post("http://0.0.0.0:8031/connections/receive-invitation", invitation)
+                    .then((res) => {
+                        console.log(res.json());
+                        webix.ajax().post("http://127.0.0.1:5000/researcher/accept-provider-inv", invitation)
+                            .then((res) => { location.reload(); });
+                    })
+            }
         }
-    }
+    ]
 },
+{% endif %}
+{% endblock %}
+
+{% block functions %}
+{% if ProviderInv == False %}
+var invitation = webix.storage.session.get("provider_invitation"); // 세션에서 invitation 가져오기
+var inv = JSON.stringify(invitation); // invitation 문자열로 바꾸기
+inv = inv.split(','); // inv (string)을 콤마를 기준으로 split (리스트)
+
+// JSON 예쁘게 출력하는 과정 (문자열 형식)
+output = "[\n     {\n";
+inv.forEach((item) => {
+    if (item.indexOf('{') != -1) {
+        item = item.substring(item.indexOf('{') + 1, item.length + 1);
+    } else if (item.indexOf('}') != -1) {
+        item = item.substring(0, item.indexOf('}'));
+    }
+    output += "\t" + item + "\n";
+})
+output += "     }\n]";
+$$("invitation").setValue(output); // 가다듬은 JSON 모양 문자열을 textarea의 value로 설정
 {% endif %}
 {% endblock %}
