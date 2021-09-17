@@ -11,22 +11,23 @@
     },
     rows: [
         {
-            view: "textarea", label: "DID",
+            view: "textarea", label: "DID", value: sessionStorage.getItem("irb_did"),
             placeholder: "DID here..."
         },
         {
             view: "radio", id: "id_radio", label: "Cred Def IDs", vertical: true,
-            options: [
-                "id 1", "id 2", "id 3"
-            ],
+            options: [sessionStorage.getItem("irb_creddef_id")],
             click: () => {
                 var selectedId = $$("id_radio").getValue();
-                webix.message("Selected ID is " + selectedId);
                 webix.message({type: "debug", text: "Now Move to Provider in order to create invitation"});
+            
+                var selected = sessionStorage.getItem(selectedId);
+                console.log(selected);
+                $$("creddef").setValue(selected + " (empty credential definition)")
             }
         },
         {
-            view: "textarea", label: "Cred Def", height: 400,
+            view: "textarea", id: "creddef", label: "Cred Def", height: 400,
             placeholder: "Credential Definition here..."
         }
     ]
@@ -34,16 +35,17 @@
     view: "form", id: "invitation_form", width: 600,
     elements: [
         {
-            view: "textarea", id: "invitation", minHeight: 250,
+            view: "textarea", id: "invitation", minHeight: 250, placeholder: "invitation here..."
         },
         {        
             view: "button", value: "Accept Invitation", css: "myButton_research webix_button",
             click: () => {
                 {% if IRBsignin %} // IRB 로그인 돼 있다면, 초대장 수락
-                var invitation = JSON.stringify(webix.storage.session.get("invitation"));
-                console.log(invitation);
+                var invitation = JSON.stringify(webix.storage.session.get("irb_invitation"));
                 webix.ajax().post("http://0.0.0.0:8031/connections/receive-invitation", invitation)
                     .then((res) => {
+                        res = res.json();
+                        sessionStorage.setItem("irb_did", res.my_did); // res 세션 등록
                         webix.ajax().post("http://127.0.0.1:5000/researcher/accept-irb-inv", invitation)
                             .then((res) => {
                                 location.reload();
@@ -60,8 +62,22 @@
 {% endblock %}
 
 {% block functions %}
-{% if IRBsignin and IRBinv == False %}
-var invitation = webix.storage.session.get("invitation"); // 세션에서 invitation 가져오기
+{% if IRBsignin and IRBinv %}
+//var ids = webix.storage.session.get("irb_creddef_id").credential_definition_ids;
+//console.log("ids length" + ids.length);
+//var radio_options = "["
+//ids.forEach((id, index) => {
+//    if (index == ids.length - 1) {
+//        radio_options += `{"id": ${index  + 1}, "value": "${id}"}`;
+//    } else {
+//        radio_options += `{"id": ${index  + 1}, "value": "${id}"}, `;
+//    }
+//})
+//radio_options += "]";
+//console.log(radio_options);
+
+{% elif IRBsignin %}
+var invitation = webix.storage.session.get("irb_invitation"); // 세션에서 invitation 가져오기
 var inv = JSON.stringify(invitation); // invitation 문자열로 바꾸기
 inv = inv.split(','); // inv (string)을 콤마를 기준으로 split (리스트)
 

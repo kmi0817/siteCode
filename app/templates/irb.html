@@ -23,6 +23,7 @@
             body: {
                 view: "button", value: "Sign Out", width: 100, css: "webix_transparent webix_button",
                 click: () => {
+                    //webix.ajax().post("")
                     webix.ajax().post("http://127.0.0.1:5000/irb/process-signout")
                         .then((res) => {
                             location.reload();
@@ -51,7 +52,27 @@
                         .then((res) => {
                             var invitation = res.json().invitation; // 초대장 받기
                             invitation = JSON.stringify(invitation);
-                            sessionStorage.setItem("invitation", invitation); // 초대장 세션 등록
+                            sessionStorage.setItem("irb_invitation", invitation); // 초대장 세션 등록
+
+                            var connection_id = res.json().connection_id; // connection id 받기
+                            sessionStorage.setItem("irb_connection_id", connection_id); // connection id 세션 등록
+
+                            // credential definition id 받기
+                            webix.ajax().get("http://0.0.0.0:8011/credential-definitions/created")
+                            .then((res) => {
+                                var ids = res.json().credential_definition_ids;
+                                sessionStorage.setItem("irb_creddef_id", ids);
+                                
+                                //sessionStorage.setItem("irb_creddef_id", `["id1", "id2", "id3"]`);
+                                
+                                // id에 해당하는 credential-definition을 세션에 등록함
+                                ids.forEach((id) => {
+                                    webix.ajax().get(`http://0.0.0.0:8011/credential-definitions/${id}`)
+                                    .then((res) => {
+                                        sessionStorage.setItem(id, JSON.stringify(res));
+                                    })
+                                })
+                            });
                             // location.href = "/researcher/irb"
                         });
                     }
@@ -67,11 +88,13 @@
                 elements: [
                     {
                         view: "text", label: "Email", name: "email", placeholder: "name@domain.com",
-                        invalidMessage: "Invalid Email address form"
+                        invalidMessage: "Invalid Email address form",
+                        value: "asd@asd.com"
                     },
                     {
                         view: "text", type: "password", label: "Password", name: "password",
-                        invalidMessage: "Password can not be empty"
+                        invalidMessage: "Password can not be empty",
+                        value: "asd"
                     },
                     {
                         view: "button", id: "btnSubmit", hotkey: "enter", value: "Submit",
@@ -81,7 +104,6 @@
                             if (signin_form.validate()) {
                                 var values = signin_form.getValues();
                                 values = webix.ajax().stringify(values);
-                                console.log(values);
 
                                 webix.ajax().post("http://127.0.0.1:5000/irb/process-signin", values)
                                     .then((res) => {
