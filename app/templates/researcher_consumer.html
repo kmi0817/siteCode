@@ -4,8 +4,39 @@
 { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
 {
 {% if ConsumerSignin and PullData %}
-    template: "데이터 사용", width: 600, autoheight: true
-
+    view: "tabview",
+    cells: [
+        {
+            header: "<span style='color: #78B395'>download</span>",
+            body: {
+                view: "form", id: "download_form", width: 600,
+                elements: [
+                    { view: "text", label: "file name", placeholder: "파일이 도착하면 자동으로 파일 이름이 입력됨" },
+                    {
+                        view: "button", value: "download", css: "myButton_research webix_button",
+                        click: () => {
+                            webix.message("downloading from SFTP Server");
+                        }
+                    },
+                ]
+            }
+        },
+        {
+            header: "<span style='color: #78B395'>upload</span>",
+            body: {
+                view: "form", id: "upload_form", width: 600,
+                elements: [
+                    { view: "text", label: "file name" },
+                    {
+                        view: "button", value: "upload", css: "myButton_research webix_button",
+                        click: () => {
+                            webix.message("uploading to SFTP Server");
+                        }
+                    },
+                ]
+            }
+        }
+    ]
 {% elif ConsumerSignin %}
     align: "center",
     body: {
