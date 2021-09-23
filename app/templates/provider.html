@@ -18,7 +18,7 @@
     body: {
         rows: [
             { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
-            {% if ProviderInv %}
+            {% if ProviderInv and ResearcherCred %}
             {
                 view: "form", id: "dataSelect_form", width: 600, height: 600,
                 elements: [
@@ -68,6 +68,10 @@
                         ]`
                     }
                 ]
+            },
+            {% elif ProviderInv %}
+            {
+                template: "Waiting for the researcher's credential presentation...", width: 600, autoheight: true
             },
             {% else %}
             {

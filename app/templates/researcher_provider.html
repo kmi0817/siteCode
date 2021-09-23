@@ -7,7 +7,14 @@
     align: "center",
     body: {
         view: "button", value: "Present Credential", width: 200, css: "myButton_research webix_button",
-        click: () => {location.href="/provider";}
+        click: () => {
+            var credential = {"credential" : "credential from Researcher to Provider"}
+            credential = JSON.stringify(credential);
+            webix.ajax().post("http://127.0.0.1:5000/researcher/present-cred-2provider", credential)
+                .then(() => {
+                    location.href="/provider";
+                })
+        }
     }
 }
 {% else %}

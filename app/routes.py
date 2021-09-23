@@ -35,6 +35,7 @@ def IRB_processSignout() :
     session.pop('IRBsignin', None)
     session.pop('IRBinv', None)
     session.pop('ProviderInv', None)
+    session.pop('ResearcherCred_provider', None)
     session.pop('ConsumerSignin', None)
     session.pop('ConsumerInv', None)
     session.pop('ResearcherCred', None)
@@ -89,6 +90,12 @@ def researcher_accept_provider_inv() :
     session['ProviderInv'] = values
     return values
 
+@app.route('/researcher/present-cred-2provider', methods=['POST'])
+def researcher_present_cred_2provider() :
+    values = request.get_json(force=True)
+    session['ResearcherCred_provider'] = values
+    return values
+
 @app.route('/researcher/accept-con-inv', methods=['POST'])
 def researcher_accept_con_inv() :
     values = request.get_json(force=True)
@@ -101,9 +108,12 @@ def researcher_accept_con_inv() :
 @app.route('/provider')
 def provider() :
     inv = False
+    cred = False
     if 'ProviderInv' in session :
         inv = True
-    return render_template('provider.html', ProviderInv=inv)
+    if 'ResearcherCred_provider' in session :
+        cred = True
+    return render_template('provider.html', ProviderInv=inv, ResearcherCred=cred)
 
 @app.route('/provider/create-inv', methods=['POST'])
 def provider_create_inv() :
