@@ -24,7 +24,7 @@
                 elements: [
                     {
                         cols: [
-                            { view: "search", placeholder: "data name (기능구현X)", width: 420, },
+                            { view: "search", id: "search", placeholder: "data name (기능구현X)", width: 420, hotkey: "enter"},
                             {
                                 view: "button", value: "Select this data", autowidth: true, css: "webix_primary webix_button",
                                 click: () => {
@@ -99,4 +99,25 @@
         ]
     }
 }
+{% endblock %}
+
+{% block functions %}
+{% if ProviderInv and ResearcherCred %}
+var list = $$("dataList").serialize();
+
+/* 검색 기능 구현 */
+$$("search").attachEvent("onTimedKeyPress", () => {
+    var value = $$("search").getValue().toLowerCase();
+    webix.message(value);
+    
+    list.forEach((item) => {
+        if (item.title.toLowerCase().indexOf(value) > -1) {
+            $$("dataList").show();
+        } else {
+            $$("dataList").hide();
+        }
+    })
+})
+
+{% endif %}
 {% endblock %}
