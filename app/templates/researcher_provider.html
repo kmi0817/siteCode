@@ -4,18 +4,25 @@
 { view: "spacer", height: 30 }, // margin처럼 활용하는 빈 공간
 {% if ProviderInv %}
 {
-    align: "center",
-    body: {
-        view: "button", value: "Present Credential", width: 200, css: "myButton_research webix_button",
-        click: () => {
-            var credential = {"credential" : "credential from Researcher to Provider"}
-            credential = JSON.stringify(credential);
-            webix.ajax().post("http://127.0.0.1:5000/researcher/present-cred-2provider", credential)
-                .then(() => {
-                    location.href="/provider";
-                })
+    view: "form", id: "credential_form", width: 600,
+    elements: [
+        {
+            view: "textarea", id: "credential", minHeight: 250, placeholder: "credentail here...",
+            value: sessionStorage.getItem("credential")
+        },
+        {
+            view: "button", value: "Present Credential", css: "myButton_research webix_button",
+            click: () => {
+                var credential_body = sessionStorage.getItem("credential");
+                var credential = {"credential" : `${credential_body} credential from Researcher to Provider`}
+                credential = JSON.stringify(credential);
+                webix.ajax().post("http://127.0.0.1:5000/researcher/present-cred-2provider", credential)
+                    .then(() => {
+                        location.href="/provider";
+                    })
+            }
         }
-    }
+    ]
 }
 {% else %}
 {

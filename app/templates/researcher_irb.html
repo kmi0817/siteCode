@@ -33,7 +33,7 @@
                 var selectedId = $$("id_radio").getValue();
                 var selected = sessionStorage.getItem(selectedId);
 
-                sessionStorage.setItem("credential", `["${selectedId}":  "${selected}"]`);
+                sessionStorage.setItem("credential", `${selected}`);
 
                 webix.message({type: "debug", text: "Now Move to Provider in order to create invitation"});
             }
