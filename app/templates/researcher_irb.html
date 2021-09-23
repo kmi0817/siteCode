@@ -19,16 +19,24 @@
             options: [sessionStorage.getItem("irb_creddef_id")],
             click: () => {
                 var selectedId = $$("id_radio").getValue();
-                webix.message({type: "debug", text: "Now Move to Provider in order to create invitation"});
-            
                 var selected = sessionStorage.getItem(selectedId);
-                console.log(selected);
                 $$("creddef").setValue(selected + " (empty credential definition)")
             }
         },
         {
             view: "textarea", id: "creddef", label: "Cred Def", height: 400,
             placeholder: "Credential Definition here..."
+        },
+        {
+            view: "button", value: "Select this credential-deifinition", width: 585,
+            css: "myButton_research webix_button", click: () => {
+                var selectedId = $$("id_radio").getValue();
+                var selected = sessionStorage.getItem(selectedId);
+
+                sessionStorage.setItem("credential", `["${selectedId}":  "${selected}"]`);
+
+                webix.message({type: "debug", text: "Now Move to Provider in order to create invitation"});
+            }
         }
     ]
     {% else %}
