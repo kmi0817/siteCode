@@ -30,8 +30,26 @@
                                 click: () => {
                                     var selectedId = $$("dataList").getSelectedId();
                                     webix.message("Selected Data is " + selectedId);
-                                    webix.message("2 Files, 2 Keys are issued as a credential");
+                                    webix.message("2 Files, 2 Keys are issued as a credential to consumer by secure channel");
                                     webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
+
+                                    <!-- var content = {"content": "hello! test!!!!"};
+                                    content = JSON.stringify(content);
+                                    $(document).ready(() => {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "http://0.0.0.0:8051/3706a587-61c3-4b44-8588-76cd3515cfef/send-message",
+                                            data: content,
+                                            contentType: "application/json"
+                                        })
+                                            .done((res) => {
+                                                console.log("done! selected data id is " + selectedId);
+                                            })
+                                    })
+                                    webix.ajax().post("http://0.0.0.0:8051/3706a587-61c3-4b44-8588-76cd3515cfef/send-message", content)
+                                        .then((res) => {
+                                            console.log("done! selected data id is " + selectedId);
+                                        }) -->
                                 }
                             },
                         ]
