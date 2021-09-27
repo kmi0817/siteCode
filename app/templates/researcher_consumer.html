@@ -24,15 +24,23 @@
         {
             header: "<span style='color: #78B395'>upload</span>",
             body: {
-                view: "form", id: "upload_form", width: 600,
-                elements: [
-                    { view: "text", label: "file name" },
+                rows: [
                     {
-                        view: "button", value: "upload", css: "myButton_research webix_button",
-                        click: () => {
-                            webix.message("uploading to SFTP Server");
-                        }
+                        view: "toolbar",
+                        elements: [
+                            {
+                                view: "uploader", id: "uploader", value: "upload", width: 285,
+                                link: "upload_list", css: "myButton_research webix_button",
+                                autosend: false // 나중에 send() 메소드로 파일 업로드 해야 함...
+                            },
+                            {
+                                view: "button", id: "save", value: "save", width: 285,
+                            }
+                        ]
                     },
+                    {
+                        view: "list", id: "upload_list", type: "uploader", width: 600, minHeight: 200,
+                    }
                 ]
             }
         }
