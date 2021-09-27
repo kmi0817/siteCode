@@ -17,6 +17,19 @@
             body: {
                 view: "button", value: "Sign Out", width: 100, css: "myButton_consumer webix_button",
                 click: () => {
+                    // consumer connection 끊기
+                    if (sessionStorage.getItem("consumer_connection_id")) {
+                        var id = sessionStorage.getItem("consumer_connection_id");
+
+                        webix.ajax().del(`http://0.0.0.0:8061/connections/${id}`)
+                            .then((res) => {
+                                sessionStorage.removeItem("consumer_connection_id");
+                                sessionStorage.removeItem("consumer_invitation");
+                                sessionStorage.removeItem("consumer_cred");
+                            })
+                    }
+
+                    // 세선 삭제
                     webix.ajax().post("http://127.0.0.1:5000/consumer/process-signout")
                         .then((res) => {
                             location.reload();
