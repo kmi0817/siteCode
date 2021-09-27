@@ -71,19 +71,20 @@
 
 {% block functions %}
 {% if IRBsignin and IRBinv %}
-//var ids = webix.storage.session.get("irb_creddef_id").credential_definition_ids;
-//console.log("ids length" + ids.length);
-//var radio_options = "["
-//ids.forEach((id, index) => {
-//    if (index == ids.length - 1) {
-//        radio_options += `{"id": ${index  + 1}, "value": "${id}"}`;
-//    } else {
-//        radio_options += `{"id": ${index  + 1}, "value": "${id}"}, `;
-//    }
-//})
-//radio_options += "]";
-//console.log(radio_options);
-
+/*
+var ids = webix.storage.session.get("irb_creddef_id").credential_definition_ids;
+console.log("ids length" + ids.length);
+var radio_options = "["
+ids.forEach((id, index) => {
+    if (index == ids.length - 1) {
+        radio_options += `{"id": ${index  + 1}, "value": "${id}"}`;
+    } else {
+        radio_options += `{"id": ${index  + 1}, "value": "${id}"}, `;
+    }
+})
+radio_options += "]";
+console.log(radio_options);
+*/
 {% elif IRBsignin %}
 var invitation = webix.storage.session.get("irb_invitation"); // 세션에서 invitation 가져오기
 if (invitation) {
