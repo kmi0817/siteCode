@@ -149,7 +149,6 @@ def consumer_processSignin() :
 def consumer_processSignout() :
     session.pop('ConsumerSignin', None)
     session.pop('ConsumerInv', None)
-    session.pop('ConsumerInv', None)
     session.pop('Consumer_ResearcherCred', None)
     return 'sign out OK'
 
