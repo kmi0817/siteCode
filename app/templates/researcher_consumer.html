@@ -35,6 +35,9 @@
                             },
                             {
                                 view: "button", id: "save", value: "save", width: 285,
+                                click: () => {
+                                    webix.message({type: "debug", text: "files will be uploaded"});
+                                }
                             }
                         ]
                     },
