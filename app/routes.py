@@ -114,7 +114,7 @@ def provider_create_inv() :
     return values
 
 @app.route('/provider/receive-cred', methods=['POST'])
-def consumer_receive_cred() :
+def provider_receive_cred() :
     credential = request.get_json(force=True)['credential']
     session['Provider_ResearcherCred'] = credential
     return credential

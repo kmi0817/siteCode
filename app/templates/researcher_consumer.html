@@ -50,7 +50,10 @@
                 var values = JSON.stringify({"credential" : "researchers_cred_to_consumer"});
 
                 webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
-                    .then((res) => { location.href="/consumer"; });
+                    .then((res) => {
+                        sessionStorage.setItem("consumer_cred", "2 File Names and Keys as a credential from reseacher to consumer");
+                        location.href="/consumer";
+                    });
             }
         }
     ]

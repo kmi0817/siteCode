@@ -44,13 +44,13 @@
                 },
                 rows: [
                     {
-                        view: "textarea", label: "Credential",
-                        placeholder: "Credential here..."
+                        view: "textarea", label: "Credential", minHeight: 250, placeholder: "Credential here...",
+                        value: sessionStorage.getItem("consumer_cred")
                     },
                     {
                         align: "center",
                         body: {
-                            view: "button", value: "Pull Data", width: 200, css: "myButton_consumer webix_button",
+                            view: "button", value: "Pull Data", css: "myButton_consumer webix_button",
                             click: () => {
                                 webix.ajax().post("http://127.0.0.1:5000/consumer/pull-data")
                                     .then((res) => { location.href="/researcher/consumer"; });
