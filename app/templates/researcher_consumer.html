@@ -38,16 +38,22 @@
         }
     ]
 {% elif ConsumerSignin %}
-    align: "center",
-    body: {
-        view: "button", value: "Present Credential", width: 200, css: "myButton_research webix_button",
-        click: () => {
-            var values = JSON.stringify({"credential" : "researchers_cred_to_consumer"});
+    view: "form", width: 600,
+    elements: [
+        {
+            view: "textarea", id: "credential", minHeight: 250, placeholder: "credentail here...",
+            value: "2 File Names and Keys as a credential"
+        },
+        {
+            view: "button", value: "Present Credential", css: "myButton_research webix_button",
+            click: () => {
+                var values = JSON.stringify({"credential" : "researchers_cred_to_consumer"});
 
-            webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
-                .then((res) => { location.href="/consumer"; });
+                webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
+                    .then((res) => { location.href="/consumer"; });
+            }
         }
-    }
+    ]
 {% else %}
     align: "center",
     body: {

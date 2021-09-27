@@ -35,10 +35,10 @@ def IRB_processSignout() :
     session.pop('IRBsignin', None)
     session.pop('IRBinv', None)
     session.pop('ProviderInv', None)
-    session.pop('ResearcherCred_provider', None)
+    session.pop('Provider_ResearcherCred', None)
     session.pop('ConsumerSignin', None)
     session.pop('ConsumerInv', None)
-    session.pop('ResearcherCred', None)
+    session.pop('Consumer_ResearcherCred', None)
     session.pop('PullData', None)
     return 'sign out OK'
 
@@ -90,18 +90,11 @@ def researcher_accept_provider_inv() :
     session['ProviderInv'] = values
     return values
 
-@app.route('/researcher/present-cred-2provider', methods=['POST'])
-def researcher_present_cred_2provider() :
-    values = request.get_json(force=True)
-    session['ResearcherCred_provider'] = values
-    return values
-
 @app.route('/researcher/accept-con-inv', methods=['POST'])
 def researcher_accept_con_inv() :
     values = request.get_json(force=True)
     session['ConsumerInv'] = values['invitation']
     return values
-
 
 
 
@@ -111,7 +104,7 @@ def provider() :
     cred = False
     if 'ProviderInv' in session :
         inv = True
-    if 'ResearcherCred_provider' in session :
+    if 'Provider_ResearcherCred' in session :
         cred = True
     return render_template('provider.html', ProviderInv=inv, ResearcherCred=cred)
 
@@ -120,6 +113,11 @@ def provider_create_inv() :
     values = request.get_json(force=True)
     return values
 
+@app.route('/provider/receive-cred', methods=['POST'])
+def consumer_receive_cred() :
+    credential = request.get_json(force=True)['credential']
+    session['Provider_ResearcherCred'] = credential
+    return credential
 
 
 @app.route('/consumer')
@@ -128,7 +126,7 @@ def consumer() :
     cred = False
     if 'ConsumerSignin' in session :
         signin = True
-    if 'ResearcherCred' in session :
+    if 'Consumer_ResearcherCred' in session :
         cred = True
     return render_template('consumer.html', ConsumerSignin=signin, ResearcherCred=cred)
 
@@ -149,13 +147,13 @@ def consumer_processSignout() :
     session.pop('ConsumerSignin', None)
     session.pop('ConsumerInv', None)
     session.pop('ConsumerInv', None)
-    session.pop('ResearcherCred', None)
+    session.pop('Consumer_ResearcherCred', None)
     return 'sign out OK'
 
 @app.route('/consumer/receive-cred', methods=['POST'])
 def consumer_receive_cred() :
     credential = request.get_json(force=True)['credential']
-    session['ResearcherCred'] = credential
+    session['Consumer_ResearcherCred'] = credential
     return credential
 
 @app.route('/consumer/pull-data', methods=['POST'])

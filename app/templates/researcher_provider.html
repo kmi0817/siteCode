@@ -16,7 +16,7 @@
                 var credential_body = sessionStorage.getItem("credential");
                 var credential = {"credential" : `${credential_body} credential from Researcher to Provider`}
                 credential = JSON.stringify(credential);
-                webix.ajax().post("http://127.0.0.1:5000/researcher/present-cred-2provider", credential)
+                webix.ajax().post("http://127.0.0.1:5000/provider/receive-cred", credential)
                     .then(() => {
                         location.href="/provider";
                     })
