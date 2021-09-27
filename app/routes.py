@@ -71,12 +71,15 @@ def researcher_provider() :
 @app.route('/researcher/consumer')
 def researcher_consumer() :
     signin = False
+    inv = False
     data = False
     if 'ConsumerSignin' in session :
         signin = True
+    if 'ConsumerInv' in session :
+        inv = True
     if 'PullData' in session :
         data = True    
-    return render_template('researcher_consumer.html', ConsumerSignin=signin, PullData=data)
+    return render_template('researcher_consumer.html', ConsumerSignin=signin, ConsumerInv=inv, PullData=data)
 
 @app.route('/researcher/accept-irb-inv', methods=['POST'])
 def researcher_accept_irb_inv() :
@@ -93,7 +96,7 @@ def researcher_accept_provider_inv() :
 @app.route('/researcher/accept-con-inv', methods=['POST'])
 def researcher_accept_con_inv() :
     values = request.get_json(force=True)
-    session['ConsumerInv'] = values['invitation']
+    session['ConsumerInv'] = values
     return values
 
 
