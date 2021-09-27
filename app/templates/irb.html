@@ -56,7 +56,7 @@
                     // 파이썬 세션들도 삭제하기
                     webix.ajax().post("http://127.0.0.1:5000/irb/process-signout")
                         .then((res) => {
-                            //sessionStorage.clear(); // 남아 있는 세션 스토리지 모두 삭제 ex) credential-definition...
+                            sessionStorage.clear(); // 남아 있는 세션 스토리지 모두 삭제 ex) credential-definition...
                             location.reload();
                         });
                 }
