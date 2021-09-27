@@ -21,19 +21,18 @@
                     if (sessionStorage.getItem("consumer_connection_id")) {
                         var id = sessionStorage.getItem("consumer_connection_id");
 
-                        webix.ajax().del(`http://0.0.0.0:8061/connections/${id}`)
-                            .then((res) => {
-                                sessionStorage.removeItem("consumer_connection_id");
-                                sessionStorage.removeItem("consumer_invitation");
-                                sessionStorage.removeItem("consumer_cred");
-                            })
+                        webix.ajax().sync().del(`http://0.0.0.0:8061/connections/${id}`)
+                        
+                        sessionStorage.removeItem("consumer_connection_id");
+                        sessionStorage.removeItem("consumer_invitation");
+                        sessionStorage.removeItem("consumer_cred");
+                        
                     }
 
-                    // 세선 삭제
-                    webix.ajax().post("http://127.0.0.1:5000/consumer/process-signout")
-                        .then((res) => {
-                            location.reload();
-                        });
+                    // 파이썬 세선 삭제
+                    webix.ajax().sync().post("http://127.0.0.1:5000/consumer/process-signout")
+                    
+                    location.reload();
                     }
             }
         },

@@ -26,7 +26,8 @@
                     // IRB connection 끊기
                     if (sessionStorage.getItem("irb_connection_id")) {
                         var id = sessionStorage.getItem("irb_connection_id");
-                        webix.ajax().del(`http://0.0.0.0:8011/connections/${id}`);
+                        webix.ajax().sync().del(`http://0.0.0.0:8011/connections/${id}`);
+
                         sessionStorage.removeItem("irb_connection_id");
                         sessionStorage.removeItem("irb_invitation");
                         sessionStorage.removeItem("irb_creddef_id");
@@ -37,8 +38,8 @@
                     // provider connection 끊기
                     if (sessionStorage.getItem("provider_connection_id")) {
                         id = sessionStorage.getItem("provider_connection_id");
-                        
-                        webix.ajax().del(`http://0.0.0.0:8051/connections/${id}`);
+                        webix.ajax().sync().del(`http://0.0.0.0:8051/connections/${id}`);
+
                         sessionStorage.removeItem("provider_invitation");
                         sessionStorage.removeItem("provider_connection_id");
                     }
@@ -46,19 +47,17 @@
                     // consumer connection 끊기
                     if (sessionStorage.getItem("consumer+connection_id")) {
                         id = sessionStorage.getItem("consumer_connection_id");
-
-                        webix.ajax().del(`http://0.0.0.0:8061/connections/${id}`);
+                        webix.ajax().sync().del(`http://0.0.0.0:8061/connections/${id}`);
+                        
                         sessionStorage.removeItem("consumer_connection_id");
                         sessionStorage.removeItem("consumer_invitation");
                         sessionStorage.removeItem("consumer_cred");
                     }
 
                     // 파이썬 세션들도 삭제하기
-                    webix.ajax().post("http://127.0.0.1:5000/irb/process-signout")
-                        .then((res) => {
-                            sessionStorage.clear(); // 남아 있는 세션 스토리지 모두 삭제 ex) credential-definition...
-                            location.reload();
-                        });
+                    webix.ajax().sync().post("http://127.0.0.1:5000/irb/process-signout")
+                    sessionStorage.clear(); // 남아 있는 세션 스토리지 모두 삭제 ex) credential-definition...
+                    location.reload();
                 }
             }
         },
