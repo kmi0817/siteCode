@@ -24,25 +24,30 @@
         {
             header: "<span style='color: #78B395'>upload</span>",
             body: {
-                rows: [
-                    {
-                        view: "toolbar",
-                        elements: [
-                            {
-                                view: "uploader", id: "uploader", value: "upload", width: 285,
-                                link: "upload_list", css: "myButton_research webix_button",
-                                autosend: false // 나중에 send() 메소드로 파일 업로드 해야 함...
-                            },
-                            {
-                                view: "button", id: "save", value: "save", width: 285,
-                                click: () => {
-                                    webix.message({type: "debug", text: "files will be uploaded"});
-                                }
-                            }
-                        ]
+                view:"form", width: 600, rows: [
+                    { 
+                        view: "uploader", id: "uploader", value: "Select file",
+                        name:"files", link:"upload_list",
+                        on: {
+                            onFileUpload: (item) => {webix.message("Done");}
+                        },
+                        autosend: false,
+                        // directory: true, // upload folders available
                     },
                     {
-                        view: "list", id: "upload_list", type: "uploader", width: 600, minHeight: 200,
+                        view:"list",  id:"upload_list", type:"uploader", height: 300,
+                    },
+                    { view: "button", id: "btn_save", label: "Save", click: function() {
+                        var file = this.getParentView().getValues();
+                        file = JSON.stringify(file, "\n");
+                        webix.message("<pre>"+file+"</pre>");
+                        console.log(file);
+
+                        webix.ajax().post("http://127.0.0.1:5000/researcher/upload-file", file)
+                            .then(() => {
+                                webix.message("sented");
+                            })
+                        }
                     }
                 ]
             }
@@ -97,7 +102,11 @@
 {% endblock %}
 
 {% block functions %}
-{% if ConsumerSignin and ConsumerInv == False %}
+{% if ConsumerSignin and ConsumerInv and PullData %}
+// drop down 방식으로 파일 업로드하기
+$$("uploader").addDropZone($$("upload_list").$view, "Drop files here");
+
+{% elif ConsumerSignin and ConsumerInv == False %}
 var invitation = webix.storage.session.get("consumer_invitation"); // 세션에서 invitation 가져오기
 var inv = JSON.stringify(invitation); // invitation 문자열로 바꾸기
 inv = inv.split(','); // inv (string)을 콤마를 기준으로 split (리스트)

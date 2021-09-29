@@ -1,10 +1,24 @@
 from app import app
 from flask import render_template, redirect, url_for, session, request
-
+import paramiko
+ 
 import sys
 
+# transport 열기
+host, port = '220.149.241.75', 3302
+transport = paramiko.Transport((host, port))
+
+# 사용사 인증
+username, password = "aiiaabc_5", "aiia&abc!tjqj5"
+transport.connect(None, username, password)
+
+# 시작
+sftp = paramiko.SFTPClient.from_transport(transport)
+
+# 홈페이지 로그인 정보 하드코딩
 saved_email = 'asd@asd.com'
 saved_password = 'asd'
+
 
 @app.route('/')
 def index() :
@@ -99,6 +113,17 @@ def researcher_accept_con_inv() :
     session['ConsumerInv'] = values
     return values
 
+@app.route('/researcher/upload-file', methods=['POST'])
+def researcher_upload_file() :
+    values = request.get_json(force=True)
+    file = values['files'] # extract file value only
+    files = file.split(',') # split them by ,
+
+    # # SFTP
+    # sftp_path = '/' + files[0]
+    # file_path = files[0]
+    # sftp.put(file_path, sftp_path)
+    return files[0]
 
 
 @app.route('/provider')
