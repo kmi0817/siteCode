@@ -113,6 +113,18 @@ def researcher_accept_con_inv() :
     session['ConsumerInv'] = values
     return values
 
+@app.route('/researcher/download-file', methods=['POST'])
+def researcher_download_file() :
+    values = request.get_json(force=True)
+    file = values['files'] # extract file value only
+    files = file.split(',') # split them by ,
+
+    # # SFTP
+    # sftp_path = '/' + files[0]
+    # file_path = files[0]
+    # sftp.put(file_path, sftp_path)
+    return files[0]
+
 @app.route('/researcher/upload-file', methods=['POST'])
 def researcher_upload_file() :
     values = request.get_json(force=True)

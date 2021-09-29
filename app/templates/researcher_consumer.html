@@ -11,7 +11,8 @@
             body: {
                 view: "form", id: "download_form", width: 600,
                 elements: [
-                    { view: "text", label: "file name", placeholder: "파일이 도착하면 자동으로 파일 이름이 입력됨" },
+                    { view: "text", id: "file1", label: "file1" },
+                    { view: "text", id: "file2", label: "file2" },
                     {
                         view: "button", value: "download", css: "myButton_research webix_button",
                         click: () => {
@@ -58,7 +59,7 @@
     elements: [
         {
             view: "textarea", id: "credential", minHeight: 250, placeholder: "credentail here...",
-            value: "2 File Names and Keys as a credential"
+            value: `{"file1": "file1...", "file2": "file2...", "key1": "key1_to_file1", "key2": "key2_to_file2"}`
         },
         {
             view: "button", value: "Present Credential", css: "myButton_research webix_button",
@@ -67,7 +68,9 @@
 
                 webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
                     .then((res) => {
-                        sessionStorage.setItem("consumer_cred", "2 File Names and Keys as a credential from reseacher to consumer");
+                        var value = {"file1": "file1...", "file2": "file2...", "key1": "key1_to_file1", "key2": "key2_to_file2"};
+                        value = JSON.stringify(value);
+                        sessionStorage.setItem("consumer_cred", value);
                         location.href="/consumer";
                     });
             }
