@@ -45,13 +45,22 @@
                     }
 
                     // consumer connection 끊기
-                    if (sessionStorage.getItem("consumer+connection_id")) {
+                    if (sessionStorage.getItem("consumer_connection_id")) {
                         id = sessionStorage.getItem("consumer_connection_id");
                         webix.ajax().sync().del(`http://0.0.0.0:8061/connections/${id}`);
                         
                         sessionStorage.removeItem("consumer_connection_id");
                         sessionStorage.removeItem("consumer_invitation");
                         sessionStorage.removeItem("consumer_cred");
+                    }
+
+                    // provider-consumer connection 끊기
+                    if (sessionStorage.getItem("prov_consu_connection_id")) {
+                        id = sessionStorage.getItem("prov_consu_connection_id");
+                        webix.ajax().sync().del(`http://0.0.0.0:8061/connections/${id}`);
+                        
+                        sessionStorage.removeItem("prov_consu__connection_id");
+                        sessionStorage.removeItem("prov_consu__invitation");
                     }
 
                     // 파이썬 세션들도 삭제하기
