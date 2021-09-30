@@ -30,28 +30,16 @@
                                 click: () => {
                                     var selectedId = $$("dataView").getSelectedId();
                                     webix.message("Selected Data is " + selectedId);
-                                    webix.message("2 Files, 2 Keys are issued as a credential to consumer by secure channel");
+                                    webix.message("2 Files, 2 Keys are issued as a credential to consumer by encrypt message");
                                     webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
 
-                                    /*
+                                    var prov_consu_connection_id = sessionStorage.getItem("prov_consu_connection_id");
                                     var content = {"content": "hello! test!!!!"};
                                     content = JSON.stringify(content);
-                                    $(document).ready(() => {
-                                        $.ajax({
-                                            type: "POST",
-                                            url: "http://0.0.0.0:8051/3706a587-61c3-4b44-8588-76cd3515cfef/send-message",
-                                            data: content,
-                                            contentType: "application/json"
-                                        })
-                                            .done((res) => {
-                                                console.log("done! selected data id is " + selectedId);
-                                            })
-                                    })
-                                    webix.ajax().post("http://0.0.0.0:8051/3706a587-61c3-4b44-8588-76cd3515cfef/send-message", content)
+                                    webix.ajax().post(`http://0.0.0.0:8051/connections/${prov_consu_connection_id}/send-message`, content)
                                         .then((res) => {
-                                            console.log("done! selected data id is " + selectedId);
+                                            console.log("done! selected data id is " + selectedId + "(webix)");
                                         })
-                                    */
                                 }
                             },
                         ]
@@ -134,6 +122,20 @@ $$("search").attachEvent("onTimedKeyPress", () => {
         return obj.title.toLowerCase().indexOf(value) != -1;
     })
 })
+{% endif %}
 
+{% if prov_cons_Connected %}
+alert("provider-consumer connected");
+{% else %}
+var values = JSON.stringify({"invitation" : "invitation for provider-consumer connection"}); // 이거 없으면 Request 오류 발생
+webix.ajax().post("http://0.0.0.0:8051/connections/create-invitation")
+    .then((res) => {
+        var invitation = res.json().invitation; // 초대장 받기
+        invitation = JSON.stringify(invitation);
+        sessionStorage.setItem("prov_consu_invitation", invitation); // 초대장 세션 등록
+        
+        var connection_id = res.json().connection_id; // connection id 받기
+        sessionStorage.setItem("prov_consu_connection_id", connection_id); // connection id 세션 등록
+})
 {% endif %}
 {% endblock %}
