@@ -28,7 +28,7 @@
                 view:"form", width: 600, rows: [
                     { 
                         view: "uploader", id: "uploader", value: "Select file",
-                        name:"files", link:"upload_list",
+                        name:"files", link:"upload_list", css: "myButton_research webix_button",
                         on: {
                             onFileUpload: (item) => {webix.message("Done");}
                         },
