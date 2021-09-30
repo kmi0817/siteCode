@@ -20,7 +20,7 @@
             click: () => {
                 var selectedId = $$("id_radio").getValue();
                 var selected = sessionStorage.getItem(selectedId);
-                $$("creddef").setValue(selected + " (empty credential definition)")
+                $$("creddef").setValue(selected)
             }
         },
         {
