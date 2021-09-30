@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template, redirect, url_for, session, request
 import paramiko
- 
+import os.path
 import sys
 
 # transport 열기
@@ -131,12 +131,20 @@ def researcher_upload_file() :
     values = request.get_json(force=True)
     file = values['files'] # extract file value only
     files = file.split(',') # split them by ,
+    files.pop() # and remove the last element because it's empty
+    print(files, file=sys.stdout)
+
+    for file in files :
+        local_path = os.path.abspath(file)
+        sftp_path = '/' + file
+        sftp.put(local_path, sftp_path)
+
 
     # # SFTP
     # sftp_path = '/' + files[0]
     # file_path = files[0]
     # sftp.put(file_path, sftp_path)
-    return files[0]
+    return files[1]
 
 
 @app.route('/provider')

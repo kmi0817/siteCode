@@ -25,10 +25,11 @@
         {
             header: "<span style='color: #78B395'>upload</span>",
             body: {
-                view:"form", width: 600, rows: [
+                view:"form", id: "upload_form", width: 600, rows: [
                     { 
                         view: "uploader", id: "uploader", value: "Select file",
-                        name:"files", link:"upload_list", css: "myButton_research webix_button",
+                        name:"files", link: "upload_list", css: "myButton_research webix_button",
+                        //upload:"https://docs.webix.com/samples/server/upload",
                         on: {
                             onFileUpload: (item) => {webix.message("Done");}
                         },
@@ -39,15 +40,22 @@
                         view:"list",  id:"upload_list", type:"uploader", height: 300,
                     },
                     { view: "button", id: "btn_save", label: "Save", click: function() {
-                        var file = this.getParentView().getValues();
-                        file = JSON.stringify(file, "\n");
-                        webix.message("<pre>"+file+"</pre>");
-                        console.log(file);
+                        var files = $$("uploader").files.data.pull; // uploader body에 있는 파일들 얻기
+                        var values = { "files" : "" };
 
-                        webix.ajax().post("http://127.0.0.1:5000/researcher/upload-file", file)
+                        // id로 File 아이템 반복
+                        var id = $$("uploader").files.getFirstId(); // 첫 번째 파일 오브젝트의 ID 받기
+                        while(id) { // ID 존재하는 동안 반복
+                            values.files += files[id].name+ ",";
+                            id = $$("uploader").files.getNextId(id);
+                        }
+                        values = JSON.stringify(values);
+                        console.log(values);
+
+                        webix.ajax().post("http://127.0.0.1:5000/researcher/upload-file", values)
                             .then(() => {
                                 webix.message("sented");
-                            })
+                            });
                         }
                     }
                 ]
