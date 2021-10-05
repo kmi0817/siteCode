@@ -67,18 +67,17 @@
     elements: [
         {
             view: "textarea", id: "credential", minHeight: 250, placeholder: "credentail here...",
-            value: `{"file1": "file1...", "file2": "file2...", "key1": "key1_to_file1", "key2": "key2_to_file2"}`
+            value: "{{credential}}"
         },
         {
             view: "button", value: "Present Credential", css: "myButton_research webix_button",
             click: () => {
-                var values = JSON.stringify({"credential" : "researchers_cred_to_consumer"});
+                var values = $$("credential").getValue();
+                values = JSON.stringify(values);
 
                 webix.ajax().post("http://127.0.0.1:5000/consumer/receive-cred", values)
                     .then((res) => {
-                        var value = {"file1": "file1...", "file2": "file2...", "key1": "key1_to_file1", "key2": "key2_to_file2"};
-                        value = JSON.stringify(value);
-                        sessionStorage.setItem("consumer_cred", value);
+                        sessionStorage.setItem("consumer_cred", values);
                         location.href="/consumer";
                     });
             }

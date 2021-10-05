@@ -1,8 +1,12 @@
 from app import app
 from flask import render_template, redirect, url_for, session, request
 import paramiko
+import json
 import os.path
 import sys
+from base64 import b64decode, b64encode
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 # transport 열기
 host, port = '220.149.241.75', 3302
@@ -93,8 +97,15 @@ def researcher_consumer() :
     if 'ConsumerInv' in session :
         inv = True
     if 'PullData' in session :
-        data = True    
-    return render_template('researcher_consumer.html', ConsumerSignin=signin, ConsumerInv=inv, PullData=data)
+        data = True
+
+    current_path = os.getcwd() # 현재 working directory 경로 가져오기
+    file_path = os.path.join(current_path, 'app', "files", "credential.json") # 경로 병합해 새 경로 생성
+    content = '' # 빈 content
+    if os.path.isfile(file_path) :
+        with open(file_path, 'r') as f :
+            content = json.load(f)
+    return render_template('researcher_consumer.html', ConsumerSignin=signin, ConsumerInv=inv, PullData=data, credential=content)
 
 @app.route('/researcher/accept-irb-inv', methods=['POST'])
 def researcher_accept_irb_inv() :
@@ -171,6 +182,111 @@ def provider_receive_cred() :
     session['Provider_ResearcherCred'] = credential
     return credential
 
+@app.route('/provider/file/credential', methods=["POST"])
+def provider_select_file() :
+    file = request.get_json(force=True)
+    title = file["file"]
+
+    sftp_path = f'/repo_test/{title}' # SFTP 서버 경로
+
+    current_path = os.getcwd() # 현재 working directory 경로 가져오기
+    file_path = os.path.join(current_path, 'app', "files", title) # 경로 병합해 새 경로 생성
+
+    sftp.get(sftp_path, file_path) # 파일 다운로드
+
+    # 암호화
+
+        # 파일 내용 읽어오기
+    body = '' # empty data content
+    f = open(file_path, "r")
+    while True :
+        line = f.readline()
+        if line == '' : break
+        body += line
+    body = body.encode('utf-8')
+
+        # 2개의 키, 데이터 생성
+    key1 = b64decode("othk6WkHQ4O6Iz//KZWpaM2fLXLQw80rD8Bt/XLtSuo=".encode('utf-8'))
+    iv = b64decode("XYsr8+TbMFcCd9DHiCZGzg==".encode('utf-8'))
+    key2 = b64decode("fbYeFx+06LRa47rZZH3Db6xO0rezOIitQ27r07ZEpbw=".encode('utf-8'))
+    body1, body2 = twoChannelEncrytion(key1, key2, iv, body)
+
+    twoChannelStore(b64encode(body1).decode('utf-8'), b64encode(body2).decode('utf-8'))
+    
+        # credential을 files 폴더에 파일로 저장
+    credential_path = os.path.join(current_path, 'app', "files", "credential.json") # 경로 병합해 새 경로 생성
+    with open(credential_path, 'w', encoding='utf-8') as f :
+        content = { 'key1': b64encode(key1).decode('utf-8'), 'key2': b64encode(key2).decode('utf-8'), 'seed': b64encode(iv).decode('utf-8') }
+        content = json.dumps(content, ensure_ascii=False, indent="\t") # json으로 변환
+        f.write(content) # 파일에 쓰기
+    f.close() # 파일 닫기
+    return content
+
+# 키 암호화 함수
+def encrypt(key, iv, bMessage):
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+
+    tail = 16 - (len(bMessage) % 16)
+    #print(tail)
+    plain = bMessage + bytes(tail)
+    #print(plain)
+
+    cMessage = encryptor.update(plain) + encryptor.finalize()
+    return cMessage
+
+# 키 복호화 함수
+def decrypt(key, iv, cMessage):
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
+    decryptor = cipher.decryptor()
+
+    return decryptor.update(cMessage) + decryptor.finalize()
+
+# 암호화 함수
+def twoChannelEncrytion(key1, key2, iv, body):
+    # import os
+    # key1 = os.urandom(32)
+    # iv = os.urandom(16)
+    # key2 = os.urandom(32)  
+    split = [bytearray(), bytearray()]
+    for i in range(len(body)):
+        split[i%2].append(body[i])
+    body1 = encrypt(key1, iv, split[0])
+    body2 = encrypt(key2, iv, split[1])
+    # return key1, key2, iv, body1, body2
+    return body1, body2
+
+# 복호화 함수
+def twoChannelDecrytion(key1, key2, iv, body1, body2):
+    split1 = decrypt(key1, iv, body1)
+    split2 = decrypt(key2, iv, body2)
+    body = bytearray()
+    for i in range(len(split1)):
+        body.append(split1[i])
+        body.append(split2[i])
+    return body
+
+def twoChannelStore(body1, body2):
+    hash1 = "sCDC0109267107"
+    file1 = open(hash1, 'w')
+    file1.write(body1)
+    file1.close()
+    hash2 = "secM0803220193"
+    file2 = open(hash2, 'w')
+    file2.write(body2)
+    file2.close()
+    return hash1, hash2
+    
+def twoChannelLoad(hash1, hash2):
+    file1 = open(hash1, 'r')
+    body1 = file1.read()
+    file1.close()
+    file2 = open(hash2, 'r')
+    body2 = file2.read()
+    file2.close()
+    return body1, body2
+
+
 
 @app.route('/consumer')
 def consumer() :
@@ -212,9 +328,9 @@ def consumer_processSignout() :
 
 @app.route('/consumer/receive-cred', methods=['POST'])
 def consumer_receive_cred() :
-    credential = request.get_json(force=True)['credential']
+    credential = request.get_json(force=True)
     session['Consumer_ResearcherCred'] = credential
-    return credential
+    return "credential OK"
 
 @app.route('/consumer/pull-data', methods=['POST'])
 def consumer_pull_data() :

@@ -32,6 +32,13 @@
                                     webix.message("Selected Data is " + selectedFile);
                                     webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
 
+                                    var values = {"file" : selectedFile};
+                                    values = JSON.stringify(values);
+
+                                    // SFTP 서버로부터 파일 선택하여 로컬에 저장하고, credential 만들기
+                                    webix.ajax().post("http://127.0.0.1:5000/provider/file/credential", values)
+                                        .then((res) => { location.href="/consumer"; });
+
                                     /* provider-consumer 간 encrypt message 사용 부분
                                     var prov_consu_connection_id = sessionStorage.getItem("prov_consu_connection_id");
                                     var content = {"content": "hello! test!!!!"};
