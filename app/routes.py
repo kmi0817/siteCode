@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, redirect, url_for, session, request
+from flask import render_template, redirect, url_for, session, request, Response
 import paramiko
 import json
 import os.path
@@ -7,6 +7,7 @@ import sys
 from base64 import b64decode, b64encode
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
+from io import StringIO
 
 # transport 열기
 host, port = '220.149.241.75', 3302
@@ -92,20 +93,44 @@ def researcher_consumer() :
     signin = False
     inv = False
     data = False
+
+    content = '' # 빈 파일 content
+    download_file = '' # 빈 파일 제목
     if 'ConsumerSignin' in session :
         signin = True
+
     if 'ConsumerInv' in session :
         inv = True
+
+        # files 폴더에 저장된 credential.json 파일 가져오기 (key1, 2, iv로 구성)
+        current_path = os.getcwd() # 현재 working directory 경로 가져오기
+        file_path = os.path.join(current_path, 'app', "files", "credential.json") # 경로 병합해 새 경로 생성
+        if os.path.isfile(file_path) :
+            with open(file_path, 'r') as f :
+                content = json.load(f)
+            f.close()
     if 'PullData' in session :
         data = True
 
-    current_path = os.getcwd() # 현재 working directory 경로 가져오기
-    file_path = os.path.join(current_path, 'app', "files", "credential.json") # 경로 병합해 새 경로 생성
-    content = '' # 빈 content
-    if os.path.isfile(file_path) :
-        with open(file_path, 'r') as f :
-            content = json.load(f)
-    return render_template('researcher_consumer.html', ConsumerSignin=signin, ConsumerInv=inv, PullData=data, credential=content)
+        # consumer 페이지에서 pull data 세션 생성 후 파일 복호화
+        current_path = os.getcwd() # 현재 working directory 경로 가져오기
+        file_path = os.path.join(current_path, 'app', "files", "credential.json") # 경로 병합해 새 경로 생성
+        data = '' # 빈 데이터
+        if os.path.isfile(file_path) :
+            with open(file_path, 'r') as f :
+                data = json.load(f)
+            f.close()
+        key1 = b64decode(data['key1'].encode('utf-8'))
+        key2 = b64decode(data['key2'].encode('utf-8'))
+        iv = b64decode(data['seed'].encode('utf-8'))
+        body1, body2 = twoChannelLoad("sCDC0109267107", "secM0803220193")
+        body1 = b64decode(body1.encode('utf-8'))
+        body2 = b64decode(body2.encode('utf-8'))
+        body = twoChannelDecrytion(key1, key2, iv, body1, body2)
+        file = { 'result': body.decode('utf-8').replace('\u0000', '') }
+        download_file = body.decode('utf-8').replace('\u0000', '')
+
+    return render_template('researcher_consumer.html', ConsumerSignin=signin, ConsumerInv=inv, PullData=data, credential=content, download_file=download_file)
 
 @app.route('/researcher/accept-irb-inv', methods=['POST'])
 def researcher_accept_irb_inv() :
@@ -128,14 +153,18 @@ def researcher_accept_con_inv() :
 @app.route('/researcher/download-file', methods=['POST'])
 def researcher_download_file() :
     values = request.get_json(force=True)
-    file = values['files'] # extract file value only
-    files = file.split(',') # split them by ,
+    file = values['file'] # extract file value only
 
-    # # SFTP
-    # sftp_path = '/' + files[0]
-    # file_path = files[0]
-    # sftp.put(file_path, sftp_path)
-    return files[0]
+    # SFTP
+    sftp_path = f'/repo_test/{file}' # SFTP 서버 경로
+
+    file_path = os.path.abspath("/Users/labia/Public")
+    file_path = os.path.join(file_path, file) # 경로 병합해 새 경로 생성
+
+    print(file_path, file=sys.stdout)
+    sftp.get(sftp_path, file_path) # 파일 다운로드
+
+    return "download OK"
 
 @app.route('/researcher/upload-file', methods=['POST'])
 def researcher_upload_file() :
@@ -182,7 +211,7 @@ def provider_receive_cred() :
     session['Provider_ResearcherCred'] = credential
     return credential
 
-@app.route('/provider/file/credential', methods=["POST"])
+@app.route('/provider/send-credential', methods=["POST"])
 def provider_select_file() :
     file = request.get_json(force=True)
     title = file["file"]
@@ -216,7 +245,11 @@ def provider_select_file() :
         # credential을 files 폴더에 파일로 저장
     credential_path = os.path.join(current_path, 'app', "files", "credential.json") # 경로 병합해 새 경로 생성
     with open(credential_path, 'w', encoding='utf-8') as f :
-        content = { 'key1': b64encode(key1).decode('utf-8'), 'key2': b64encode(key2).decode('utf-8'), 'seed': b64encode(iv).decode('utf-8') }
+        content = {
+            'key1': b64encode(key1).decode('utf-8'),
+            'key2': b64encode(key2).decode('utf-8'),
+            'seed': b64encode(iv).decode('utf-8')
+        }
         content = json.dumps(content, ensure_ascii=False, indent="\t") # json으로 변환
         f.write(content) # 파일에 쓰기
     f.close() # 파일 닫기
@@ -267,21 +300,30 @@ def twoChannelDecrytion(key1, key2, iv, body1, body2):
     return body
 
 def twoChannelStore(body1, body2):
+    current_path = os.getcwd() # 현재 working directory 경로 가져오기
+
     hash1 = "sCDC0109267107"
-    file1 = open(hash1, 'w')
+    hash1_path = os.path.join(current_path, 'app', "files", hash1) # 경로 병합해 새 경로 생성
+    file1 = open(hash1_path, 'w')
     file1.write(body1)
     file1.close()
     hash2 = "secM0803220193"
-    file2 = open(hash2, 'w')
+    hash2_path = os.path.join(current_path, 'app', "files", hash2) # 경로 병합해 새 경로 생성
+    file2 = open(hash2_path, 'w')
     file2.write(body2)
     file2.close()
     return hash1, hash2
     
 def twoChannelLoad(hash1, hash2):
-    file1 = open(hash1, 'r')
+    current_path = os.getcwd() # 현재 working directory 경로 가져오기
+
+    hash1_path = os.path.join(current_path, 'app', "files", hash1) # 경로 병합해 새 경로 생성
+    file1 = open(hash1_path, 'r')
     body1 = file1.read()
     file1.close()
-    file2 = open(hash2, 'r')
+
+    hash2_path = os.path.join(current_path, 'app', "files", hash2) # 경로 병합해 새 경로 생성
+    file2 = open(hash2_path, 'r')
     body2 = file2.read()
     file2.close()
     return body1, body2

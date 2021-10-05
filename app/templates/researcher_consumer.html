@@ -10,13 +10,22 @@
             header: "<span style='color: #78B395'>download</span>",
             body: {
                 view: "form", id: "download_form", width: 600,
-                elements: [
-                    { view: "text", id: "file1", label: "file1" },
-                    { view: "text", id: "file2", label: "file2" },
+                cols: [
                     {
-                        view: "button", value: "download", css: "myButton_research webix_button",
+                        view: "text", id: "file_text", autoheight: true, width: 450,
+                        readonly: true, label: "file", value: "{{download_file}}"
+                    },
+                    {
+                        view: "button", value: "download",
+                        width: 100, css: "myButton_research webix_button",
                         click: () => {
-                            webix.message("downloading from SFTP Server");
+                            var values = { "file": $$("file_text").getValue() };
+                            values = JSON.stringify(values);
+
+                            //webix.ajax().post("/researcher/download-file", values)
+                            //    .then((res) => {
+                            //        console.log("done!");
+                            //    })
                         }
                     },
                 ]
@@ -52,10 +61,7 @@
                         values = JSON.stringify(values);
                         console.log(values);
 
-                        webix.ajax().post("http://127.0.0.1:5000/researcher/upload-file", values)
-                            .then(() => {
-                                webix.message("sented");
-                            });
+                        webix.ajax().post("http://127.0.0.1:5000/researcher/upload-file", values);
                         }
                     }
                 ]
