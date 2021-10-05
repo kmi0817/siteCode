@@ -51,7 +51,7 @@ def IRB_processSignout() :
     session.pop('ProviderInv', None)
     session.pop('Provider_ResearcherCred', None)
     session.pop('ConsumerSignin', None)
-    session.pop('prov_cons_Connected', None)
+    # session.pop('prov_cons_Connected', None)
     session.pop('ConsumerInv', None)
     session.pop('Consumer_ResearcherCred', None)
     session.pop('PullData', None)
@@ -156,8 +156,8 @@ def provider() :
         inv = True
     if 'Provider_ResearcherCred' in session :
         cred = True
-    if 'prov_cons_Connected' in session :
-        connected = True
+    # if 'prov_cons_Connected' in session :
+    #     connected = True
     return render_template('provider.html', ProviderInv=inv, ResearcherCred=cred, prov_cons_Connected=connected)
 
 @app.route('/provider/create-inv', methods=['POST'])
@@ -181,8 +181,8 @@ def consumer() :
         signin = True
     if 'Consumer_ResearcherCred' in session :
         cred = True
-    if 'prov_cons_Connected' in session :
-        connected = True
+    # if 'prov_cons_Connected' in session :
+    #     connected = True
     return render_template('consumer.html', ConsumerSignin=signin, ResearcherCred=cred, prov_cons_Connected=connected)
 
 @app.route('/consumer/process-signin', methods=['POST'])
@@ -204,11 +204,11 @@ def consumer_processSignout() :
     session.pop('Consumer_ResearcherCred', None)
     return 'sign out OK'
 
-@app.route('/consumer/accept-provider-inv', methods=['POST'])
-def consumer_accpet_provider_inv() :
-    values = request.get_json(force=True)
-    session['prov_cons_Connected'] = values
-    return values
+# @app.route('/consumer/accept-provider-inv', methods=['POST'])
+# def consumer_accpet_provider_inv() :
+#     values = request.get_json(force=True)
+#     session['prov_cons_Connected'] = values
+#     return values
 
 @app.route('/consumer/receive-cred', methods=['POST'])
 def consumer_receive_cred() :
