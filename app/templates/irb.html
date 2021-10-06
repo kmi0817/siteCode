@@ -55,6 +55,7 @@
                     }
 
                     // provider-consumer connection 끊기
+                    /*
                     if (sessionStorage.getItem("prov_consu_connection_id")) {
                         id = sessionStorage.getItem("prov_consu_connection_id");
                         webix.ajax().sync().del(`http://0.0.0.0:8061/connections/${id}`);
@@ -62,6 +63,7 @@
                         sessionStorage.removeItem("prov_consu__connection_id");
                         sessionStorage.removeItem("prov_consu__invitation");
                     }
+                    */
 
                     // 파이썬 세션들도 삭제하기
                     webix.ajax().sync().post("http://127.0.0.1:5000/irb/process-signout")
@@ -128,12 +130,10 @@
                     {
                         view: "text", label: "Email", name: "email", placeholder: "name@domain.com",
                         invalidMessage: "Invalid Email address form",
-                        value: "asd@asd.com"
                     },
                     {
                         view: "text", type: "password", label: "Password", name: "password",
                         invalidMessage: "Password can not be empty",
-                        value: "asd"
                     },
                     {
                         view: "button", id: "btnSubmit", hotkey: "enter", value: "Submit",
