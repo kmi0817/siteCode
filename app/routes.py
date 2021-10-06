@@ -8,6 +8,7 @@ from base64 import b64decode, b64encode
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from io import StringIO
+from werkzeug.utils import secure_filename
 
 # transport 열기
 host, port = '220.149.241.75', 3302
@@ -169,27 +170,16 @@ def researcher_download_file() :
 
 @app.route('/researcher/upload-file', methods=['POST'])
 def researcher_upload_file() :
-    values = request.get_json(force=True)
-    file = values['files'] # extract file value only
-    files = file.split(',') # split them by ,
-    files.pop() # and remove the last element because it's empty
-    print(files, file=sys.stdout)
+    f = request.files['file']
+    
+    f.save(secure_filename(f.filename)) # 현재 working directory 경로에 파일 임시 저장
 
-    for file in files :
-        local_path = os.path.abspath(file)
-        sftp_path = '/' + file
-        sftp.put(local_path, sftp_path)
+    sftp_path = '/repo_test/'  + secure_filename(f.filename)
+    file_path = os.getcwd() + '/' + secure_filename(f.filename)
+    sftp.put(file_path, sftp_path) # sftp에 파일 업로드
 
+    return redirect(url_for("researcher_consumer"))
 
-    # # SFTP
-    # sftp_path = '/' + files[0]
-    # file_path = files[0]
-    # sftp.put(file_path, sftp_path)
-    return files[1]
-
-@app.route('/researcher/filemanager')
-def researcher_filemanager() :
-    return render_template("filemanager.html")
 
 @app.route('/provider')
 def provider() :
