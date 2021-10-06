@@ -51,15 +51,16 @@ def IRB_processSignin() :
 
 @app.route('/irb/process-signout', methods=['POST'])
 def IRB_processSignout() :
-    session.pop('IRBsignin', None)
-    session.pop('IRBinv', None)
-    session.pop('ProviderInv', None)
-    session.pop('Provider_ResearcherCred', None)
-    session.pop('ConsumerSignin', None)
-    # session.pop('prov_cons_Connected', None)
-    session.pop('ConsumerInv', None)
-    session.pop('Consumer_ResearcherCred', None)
-    session.pop('PullData', None)
+    # session.pop('IRBsignin', None)
+    # session.pop('IRBinv', None)
+    # session.pop('ProviderInv', None)
+    # session.pop('Provider_ResearcherCred', None)
+    # session.pop('ConsumerSignin', None)
+    # # session.pop('prov_cons_Connected', None)
+    # session.pop('ConsumerInv', None)
+    # session.pop('Consumer_ResearcherCred', None)
+    # session.pop('PullData', None)
+    session.clear() # 모든 섹션 삭제
     return 'sign out OK'
 
 
@@ -213,8 +214,8 @@ def provider_receive_cred() :
 
 @app.route('/provider/send-credential', methods=["POST"])
 def provider_select_file() :
-    file = request.get_json(force=True)
-    title = file["file"]
+    file = request.get_json(force=True) # 웹  페이지로부터 값  받아오기
+    title = file["file"] # file 제목만 꺼내기
 
     sftp_path = f'/repo_test/{title}' # SFTP 서버 경로
 
@@ -225,16 +226,16 @@ def provider_select_file() :
 
     # 암호화
 
-        # 파일 내용 읽어오기
+        # 1) 파일 내용 읽어오기
     body = '' # empty data content
     f = open(file_path, "r")
     while True :
         line = f.readline()
-        if line == '' : break
+        if line == '' : break # 빈 줄이라면 반복문 멈추기
         body += line
     body = body.encode('utf-8')
 
-        # 2개의 키, 데이터 생성
+        # 2) 2개의 키, 데이터 생성
     key1 = b64decode("othk6WkHQ4O6Iz//KZWpaM2fLXLQw80rD8Bt/XLtSuo=".encode('utf-8'))
     iv = b64decode("XYsr8+TbMFcCd9DHiCZGzg==".encode('utf-8'))
     key2 = b64decode("fbYeFx+06LRa47rZZH3Db6xO0rezOIitQ27r07ZEpbw=".encode('utf-8'))

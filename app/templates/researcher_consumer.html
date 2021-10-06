@@ -21,11 +21,12 @@
                         click: () => {
                             var values = { "file": $$("file_text").getValue() };
                             values = JSON.stringify(values);
-
-                            //webix.ajax().post("/researcher/download-file", values)
-                            //    .then((res) => {
-                            //        console.log("done!");
-                            //    })
+                            console.log(values);
+                            webix.ajax().post("/researcher/download-file", values)
+                                .then((res) => { webix.message("downloaded!"); })
+                                .fail(() => {
+                                    webix.message({type: "error", text: "Error..."});
+                                })
                         }
                     },
                 ]

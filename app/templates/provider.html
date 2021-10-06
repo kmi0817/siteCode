@@ -28,13 +28,14 @@
                             {
                                 view: "button", value: "Select this data", autowidth: true, css: "webix_primary webix_button",
                                 click: () => {
-                                    var selectedFile = $$("dataView").getSelectedItem().title;
+                                    var selectedFile = $$("dataView").getSelectedItem().title; // 선택한 아이템 제목 가져오기
+
                                     webix.message("Selected Data is " + selectedFile);
                                     webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
 
-                                    var values = {"file" : selectedFile};
-                                    values = JSON.stringify(values);
-                                    console.log(values);
+                                    var values = {"file" : selectedFile}; // JSON 형태
+                                    values = JSON.stringify(values); // JSON으로 만들기
+
                                     // SFTP 서버로부터 파일 선택하여 로컬에 저장하고, credential 만들기
                                     webix.ajax().post("http://127.0.0.1:5000/provider/send-credential", values);
 
