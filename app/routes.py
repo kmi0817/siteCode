@@ -187,6 +187,9 @@ def researcher_upload_file() :
     # sftp.put(file_path, sftp_path)
     return files[1]
 
+@app.route('/researcher/filemanager')
+def researcher_filemanager() :
+    return render_template("filemanager.html")
 
 @app.route('/provider')
 def provider() :

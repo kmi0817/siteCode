@@ -13,7 +13,7 @@
                 cols: [
                     {
                         view: "text", id: "file_text", autoheight: true, width: 450,
-                        readonly: true, label: "file", value: "{{download_file}}"
+                        readonly: true, label: "file", value: sessionStorage.getItem("file")
                     },
                     {
                         view: "button", value: "download",
@@ -21,7 +21,7 @@
                         click: () => {
                             var values = { "file": $$("file_text").getValue() };
                             values = JSON.stringify(values);
-                            console.log(values);
+                            
                             webix.ajax().post("/researcher/download-file", values)
                                 .then((res) => { webix.message("downloaded!"); })
                                 .fail(() => {

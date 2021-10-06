@@ -29,6 +29,8 @@
                                 view: "button", value: "Select this data", autowidth: true, css: "webix_primary webix_button",
                                 click: () => {
                                     var selectedFile = $$("dataView").getSelectedItem().title; // 선택한 아이템 제목 가져오기
+                                    
+                                    sessionStorage.setItem("file", selectedFile); // 선택한 파일 제목 세션에 저장
 
                                     webix.message("Selected Data is " + selectedFile);
                                     webix.message({type: "debug", text: "Now move to Consumer in order to sign in"});
