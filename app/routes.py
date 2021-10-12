@@ -7,7 +7,6 @@ import sys
 from base64 import b64decode, b64encode
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
-from io import StringIO
 from werkzeug.utils import secure_filename
 
 # transport 열기
@@ -52,16 +51,9 @@ def IRB_processSignin() :
 
 @app.route('/irb/process-signout', methods=['POST'])
 def IRB_processSignout() :
-    # session.pop('IRBsignin', None)
-    # session.pop('IRBinv', None)
-    # session.pop('ProviderInv', None)
-    # session.pop('Provider_ResearcherCred', None)
-    # session.pop('ConsumerSignin', None)
-    # # session.pop('prov_cons_Connected', None)
-    # session.pop('ConsumerInv', None)
-    # session.pop('Consumer_ResearcherCred', None)
-    # session.pop('PullData', None)
     session.clear() # 모든 섹션 삭제
+    sftp.close()
+    transport.close()
     return 'sign out OK'
 
 
@@ -156,12 +148,12 @@ def researcher_accept_con_inv() :
 def researcher_download_file() :
     values = request.get_json(force=True)
     file = values['file'] # extract file value only
+    path = values['path']
 
     # SFTP
     sftp_path = f'/repo_test/{file}' # SFTP 서버 경로
 
-    file_path = os.path.abspath("/Users/labia/Public")
-    file_path = os.path.join(file_path, file) # 경로 병합해 새 경로 생성
+    file_path = os.path.join(path, file) # 경로에 파일명 추가하여 새 경로 생성
 
     print(file_path, file=sys.stdout)
     sftp.get(sftp_path, file_path) # 파일 다운로드
@@ -171,7 +163,7 @@ def researcher_download_file() :
 @app.route('/researcher/upload-file', methods=['POST'])
 def researcher_upload_file() :
     f = request.files['file']
-    
+
     f.save(secure_filename(f.filename)) # 현재 working directory 경로에 파일 임시 저장
 
     sftp_path = '/repo_test/'  + secure_filename(f.filename)
@@ -190,9 +182,7 @@ def provider() :
         inv = True
     if 'Provider_ResearcherCred' in session :
         cred = True
-    # if 'prov_cons_Connected' in session :
-    #     connected = True
-    return render_template('provider.html', ProviderInv=inv, ResearcherCred=cred, prov_cons_Connected=connected)
+    return render_template('provider.html', ProviderInv=inv, ResearcherCred=cred)
 
 @app.route('/provider/create-inv', methods=['POST'])
 def provider_create_inv() :
@@ -333,9 +323,7 @@ def consumer() :
         signin = True
     if 'Consumer_ResearcherCred' in session :
         cred = True
-    # if 'prov_cons_Connected' in session :
-    #     connected = True
-    return render_template('consumer.html', ConsumerSignin=signin, ResearcherCred=cred, prov_cons_Connected=connected)
+    return render_template('consumer.html', ConsumerSignin=signin, ResearcherCred=cred)
 
 @app.route('/consumer/process-signin', methods=['POST'])
 def consumer_processSignin() :
@@ -355,12 +343,6 @@ def consumer_processSignout() :
     session.pop('ConsumerInv', None)
     session.pop('Consumer_ResearcherCred', None)
     return 'sign out OK'
-
-# @app.route('/consumer/accept-provider-inv', methods=['POST'])
-# def consumer_accpet_provider_inv() :
-#     values = request.get_json(force=True)
-#     session['prov_cons_Connected'] = values
-#     return values
 
 @app.route('/consumer/receive-cred', methods=['POST'])
 def consumer_receive_cred() :

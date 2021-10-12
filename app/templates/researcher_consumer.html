@@ -10,85 +10,51 @@
             header: "<span style='color: #78B395'>download</span>",
             body: {
                 view: "form", id: "download_form", width: 600,
-                cols: [
+                elements: [
                     {
-                        view: "text", id: "file_text", autoheight: true, width: 450,
+                        view: "text", id: "file_text", name: "file", autoheight: true,
                         readonly: true, label: "file", value: sessionStorage.getItem("file")
                     },
                     {
+                        view: "text", id: "path", name: "path", autoheight: true,
+                        label: "path", placeholder: "download path",
+                        invalidMessage: "download path can not be empty",
+                    },
+                    {
                         view: "button", value: "download",
-                        width: 100, css: "myButton_research webix_button",
+                        width: 575, css: "myButton_research webix_button",
                         click: () => {
-                            var values = { "file": $$("file_text").getValue() };
-                            values = JSON.stringify(values);
-                            
-                            webix.ajax().post("/researcher/download-file", values)
-                                .then((res) => { webix.message("downloaded!"); })
-                                .fail(() => {
-                                    webix.message({type: "error", text: "Error..."});
-                                })
+                            if ($$("download_form").validate()) {
+                                var values = JSON.stringify($$("download_form").getValues(), null, 4);
+
+                                webix.ajax().post("/researcher/download-file", values)
+                                    .then((res) => { webix.message("downloaded!"); })
+                                    .fail(() => {
+                                        webix.message({type: "error", text: "Error..."});
+                                    })
+                            }
                         }
                     },
-                ]
+                ],
+                rules: {
+                    "path": webix.rules.isNotEmpty
+                }
             }
         },
         {
             header: "<span style='color: #78B395'>upload</span>",
             body: {
-                /*
+                /* https://velog.io/@sklove96/inputtypefile-%EC%BB%A4%EC%8A%A4%ED%85%80%ED%95%98%EA%B8%B0 참고 */
                 template: `
-                    <form action="http://127.0.0.1:5000/researcher/upload-file" method="POST">
-                        <label for="upload_file" style="background-color: #78B395; color: #FFFFFF; width: 84px; height: 32px; border-radius: 2px; border: none;
-                        cursor: pointer; font-family: Roboto, sans-serif; font-size: 16px; font-weight: 500; letter-spacing: 0px; outline: none; -webkit-appearance: none; padding: 0 6px;">
-                            Upload
-                        </label>
-                        <input type="file" name="file">
-                        <br>
-                        <input type="submit" id="upload_file" value="Save" style="background-color: #78B395; color: #FFFFFF; width: 84px; height: 32px; border-radius: 2px; border: none;
-                            cursor: pointer; font-family: Roboto, sans-serif; font-size: 16px; font-weight: 500; letter-spacing: 0px; outline: none; -webkit-appearance: none; padding: 0 6px;">
-                    </form>
-                `,
-                */
-                /* https://velog.io/@sklove96/inputtypefile-%EC%BB%A4%EC%8A%A4%ED%85%80%ED%95%98%EA%B8%B0 따라함. 나중에 바꾸자 */
-                template: `
-                <form action="http://127.0.0.1:5000/researcher/upload-file" method="POST" class="filebox" enctype="multipart/form-data">
+                <form action="http://127.0.0.1:5000/researcher/upload-file" method="POST" class="uploadFile" enctype="multipart/form-data">
                     <input class="upload-name" value="첨부파일" placeholder="첨부파일">
                     <label for="file">upload</label><br>
                     <input type="file" id="file" name="file"><br>
+                    <input id="path", name="path" class="upload-path" placeholder="upload sftp path (기능X)">
                     <input type="submit" value="Save" class="researcher_btn">
                 </form>
                 `,
                 width: 600, autoheight: true
-
-                /* webix
-                view:"form", id: "upload_form", width: 600, rows: [
-                    {
-                        view: "uploader", id: "uploader", value: "Select file",
-                        name:"files", link: "upload_list", css: "myButton_research webix_button",
-                        autosend: false,
-                        // directory: true, // upload folders available
-                    },
-                    {
-                        view:"list",  id:"upload_list", type:"uploader", height: 300,
-                    },
-                    {
-                        view: "button", id: "btn_save", label: "Save",
-                        click: function() {
-                            var files = $$("uploader").files.data.pull; // uploader body에 있는 파일들 얻기
-                            
-                            // id로 File 아이템 반복
-                            var id = $$("uploader").files.getFirstId(); // 첫 번째 파일 오브젝트의 ID 받기
-                            while(id) { // ID 존재하는 동안 반복
-                                console.log(files[id]);
-                                
-                                webix.ajax().post("http://127.0.0.1:5000/researcher/upload-file", files[id]);
-
-                                id = $$("uploader").files.getNextId(id);
-                            }
-                        }
-                    }
-                ]
-                */
             }
         }
     ]
@@ -143,8 +109,6 @@
 
 {% block functions %}
 {% if ConsumerSignin and ConsumerInv and PullData %}
-// drop down 방식으로 파일 업로드하기
-// $$("uploader").addDropZone($$("upload_list").$view, "Drop files here");
 
 {% elif ConsumerSignin and ConsumerInv == False %}
 var invitation = webix.storage.session.get("consumer_invitation"); // 세션에서 invitation 가져오기

@@ -126,22 +126,3 @@
     }
 }
 {% endblock %}
-
-{% block functions %}
-{% if prov_cons_Connected %}
-// alert("provider-consumer connected");
-{% else %}
-/* provider-consumer connection 부분
-if (sessionStorage.getItem("prov_consu_invitation")) {
-    var invitation = JSON.stringify(webix.storage.session.get("prov_consu_invitation"));
-    webix.ajax().post("http://0.0.0.0:8061/connections/receive-invitation", invitation)
-        .then((res) => {
-            webix.ajax().post("http://127.0.0.1:5000/consumer/accept-provider-inv", invitation)
-                .then((res) => {
-                    location.reload();
-                });
-        });
-}
-*/
-{% endif %}
-{% endblock %}
