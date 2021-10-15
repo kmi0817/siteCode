@@ -29,3 +29,6 @@ pw: "asd"
 
 - paramiko 사용
 - routes.py 파일에 연결할 SFTP 정보 하드 코딩
+
+4. 수정
+* 모든 IP 허용하도록 수정 (CORS 정책 수정)
