@@ -12,8 +12,14 @@ pip install json
 pip install cryptography
 pip install Werkzeug
 ```
+2. 가상환경 진입 후
+```
+1. export FLASK_APP=app
+2. export FLASK_ENV=development
+3. flask run
+```
 
-2. Login Info
+4. Login Info
 
 ```
 # routes.py 파일에 로그인 정보 하드 코딩
@@ -25,10 +31,10 @@ pw: "asd"
 - 문제 원인 파악 중
 - ## 오류 처리하는 코드는 27일 이후 추가 예정
 
-3. SFTP
+4. SFTP
 
 - paramiko 사용
 - routes.py 파일에 연결할 SFTP 정보 하드 코딩
 
-4. 수정
+5. 수정
 * 모든 IP 허용하도록 수정 (CORS 정책 수정)
