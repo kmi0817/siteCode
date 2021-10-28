@@ -109,6 +109,9 @@
                                         })
                                     })
                                 });
+                            })
+                            .fail((xhr) => {
+                                alert("IRB 서버 연결 상태를 확인하세요.");
                             });
                     }
                 }
@@ -141,6 +144,11 @@
                                 webix.ajax().post("http://127.0.0.1:5000/irb/process-signin", values)
                                     .then((res) => {
                                         location.reload();
+                                    })
+                                    .fail((xhr) => {
+                                        var response = JSON.parse(xhr.response);
+                                        var message = response.error.message + " 다음과 같은 로그인 시 문제가 발생하였습니다.";
+                                        console.log(message);
                                     });
                             }
                         }
